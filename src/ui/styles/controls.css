@@ -450,6 +450,11 @@ html:not([lang='en']) .panel-collapse-btn {
   color: var(--text-dim);
   animation: pulse 2s ease-in-out infinite;
 }
+@media (prefers-reduced-motion: reduce) {
+  .loader-status {
+    animation: none;
+  }
+}
 
 /* Dhuan: the upstream credit under the loader status, quieter than the status. */
 .loader-credit {

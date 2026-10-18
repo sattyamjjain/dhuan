@@ -10,6 +10,7 @@ import {
   naqiDisplayValue,
   normalizeCpcbReadings,
   parseCpcbTimestamp,
+  providerBandRanges,
   providerBands,
   readingsAreStale,
   valueLabel,
@@ -60,6 +61,22 @@ test('CPCB registers its own six NAQI bands on a 0–500 scale with a key', () =
   );
   const colors = NAQI_BANDS.map((b) => b.color);
   assert.equal(new Set(colors).size, colors.length);
+});
+
+test('the legend prints each NAQI band with its numeric range', () => {
+  assert.deepEqual(
+    [...providerBandRanges('cpcb').entries()],
+    [
+      ['good', '0–50'],
+      ['satisfactory', '51–100'],
+      ['moderate', '101–200'],
+      ['poor', '201–300'],
+      ['very-poor', '301–400'],
+      ['severe', '401+'],
+    ],
+  );
+  assert.equal(AIR_QUALITY_PROVIDERS.cpcb.legendRanges, true);
+  assert.equal(AIR_QUALITY_PROVIDERS.eccc.legendRanges, undefined);
 });
 
 test('CPCB thresholds are inclusive at the top of each band', () => {
@@ -131,7 +148,10 @@ test('one reading per station: the worst sub-index wins and names the pollutant'
   assert.equal(reading.lat, 28.6468);
   assert.equal(reading.lon, 77.316);
   assert.equal(reading.observedMs, OBSERVED_MS);
-  assert.equal(reading.color, NAQI_BANDS[5].color);
+  // On the map the Severe maroon is lightened for contrast; the legend keeps it.
+  assert.equal(reading.color, NAQI_BANDS[5].mapColor);
+  assert.notEqual(reading.color, NAQI_BANDS[5].color);
+  assert.equal(reading.bandLabel, 'Severe');
   assert.equal(reading.label, '437');
   assert.equal(reading.risk, NAQI_BANDS[5].risk);
 });

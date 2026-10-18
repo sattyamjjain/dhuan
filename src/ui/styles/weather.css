@@ -425,8 +425,11 @@ html:not([lang='en']) .rail-card-setting {
 }
 .rail-card-legend-swatch {
   width: 12px;
-  height: 4px;
+  height: 8px;
   flex: 0 0 12px;
+  /* A dark swatch (CPCB Severe, AQHI Very High) still reads on the card. */
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-sizing: border-box;
 }
 
 .rail-card-body {

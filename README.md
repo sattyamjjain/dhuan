@@ -83,6 +83,12 @@ The city's own sources matter as much; this map does not say otherwise.
 - Fires are what satellites saw, not what happened. Stubble is one of several sources.
 - Not for health or emergency decisions.
 
+Accessibility notes: the six NAQI colours are CPCB's bulletin palette and are never the only
+cue. The legend pairs each swatch with its name and range, the readout list says the band in
+words, and every station circle sits on a light ring so a dark band still reads over dark
+terrain. On the map the Severe maroon is lightened to `#e0201c` for contrast; the legend keeps
+`#c00000`. The HUD typewriter and the loader pulse respect `prefers-reduced-motion`.
+
 The five excluded layers stay registered in the code (the share-link token ledger and the
 control surface expect them) but are hidden from the Layers panel, skipped by the voice
 agent and refused by the layer manager, including from share links and stored state. The

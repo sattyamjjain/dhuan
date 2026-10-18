@@ -783,7 +783,9 @@ export class IntelHUD {
           region: fires.label,
         })
       : null;
-    return [line, fireTag, provenance].filter(Boolean).join(' | ');
+    // The summary is a single no-wrap line that truncates at the end, so the
+    // edition's number leads it rather than being the first thing cut.
+    return [fireTag, line, provenance].filter(Boolean).join(' | ');
   }
 
   /**
@@ -890,7 +892,12 @@ export class IntelHUD {
   }
 
   _setSummaryText(text, animate) {
-    if (animate) {
+    // The typewriter is motion; a reader who asked for less gets the line.
+    const reducedMotion =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (animate && !reducedMotion) {
       this._typeSummary(text);
       return;
     }

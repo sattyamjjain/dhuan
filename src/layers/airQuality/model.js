@@ -92,6 +92,13 @@ export const NAQI_BANDS = Object.freeze([
       'Affects healthy people and seriously impacts those with existing disease',
     ),
     color: '#c00000',
+    /**
+     * CPCB's maroon sits at about 3:1 on the dark map plate and falls below
+     * it over terrain through the station fill's alpha, so the on-map
+     * colour (circle, overlay bar and leader) is a lighter dark red. The
+     * legend swatch keeps the bulletin colour.
+     */
+    mapColor: '#e0201c',
   }),
 ]);
 
@@ -199,6 +206,8 @@ export const AIR_QUALITY_PROVIDERS = Object.freeze({
     coverage: msg('India · CPCB CAAQMS network'),
     /** The data.gov.in key the proxy needs; see keySetupCore. */
     requiresKeyId: 'cpcb',
+    /** NAQI bands are numeric ranges people know; the legend says them. */
+    legendRanges: true,
     staleAfterMs: CPCB_STALE_AFTER_MS,
     maxObservationAgeMs: OBSERVATION_MAX_AGE_MS,
     bandScale: NAQI_BANDS,
@@ -238,6 +247,25 @@ export function providerBands(providerId) {
   }));
 }
 
+/**
+ * The numeric range a band covers, as the legend prints it: "0–50", "51–100",
+ * "401+". Integer scales only; the lower bound is the previous band's max + 1.
+ * @param {string} providerId
+ * @returns {Map<string, string>} Band id → range text.
+ */
+export function providerBandRanges(providerId) {
+  const ranges = new Map();
+  let floor = 0;
+  for (const band of airQualityProvider(providerId).bands) {
+    ranges.set(
+      band.id,
+      Number.isFinite(band.max) ? `${floor}–${band.max}` : `${floor}+`,
+    );
+    floor = band.max + 1;
+  }
+  return ranges;
+}
+
 /** Band descriptor for an id on a provider's scale, or null. */
 export function airQualityBandById(
   bandId,
@@ -250,14 +278,18 @@ export function airQualityBandById(
   );
 }
 
-/** Accent colour for a band id, falling back to neutral grey. */
+/**
+ * Accent colour for a band id on the map (station circle, overlay bar and
+ * leader), falling back to neutral grey. A band may name a separate
+ * `mapColor` when its published colour is too dark for the map plate; the
+ * legend swatch always shows the published `color`.
+ */
 export function airQualityColor(
   bandId,
   providerId = DEFAULT_AIR_QUALITY_PROVIDER_ID,
 ) {
-  return (
-    airQualityBandById(bandId, providerId)?.color || AIR_QUALITY_UNKNOWN_COLOR
-  );
+  const band = airQualityBandById(bandId, providerId);
+  return band?.mapColor || band?.color || AIR_QUALITY_UNKNOWN_COLOR;
 }
 
 /**
@@ -608,6 +640,8 @@ export function normalizeCpcbReadings(payload, now = Date.now()) {
       color: airQualityColor(band, provider.id),
       label: valueLabel(provider.id, value),
       risk: bandRiskText(band, provider.id),
+      // The band in words, so a list row never relies on the accent colour.
+      bandLabel: airQualityBandById(band, provider.id)?.label ?? null,
       dominant,
       note: null,
     });
@@ -717,6 +751,7 @@ export function mapAnalystRecord(raw, index = 0) {
     scale: text(raw?.scale),
     value: num(raw?.value),
     band: text(raw?.band),
+    bandLabel: text(raw?.bandLabel),
     name: text(raw?.name),
     zone: text(raw?.zone),
     city: text(raw?.city),

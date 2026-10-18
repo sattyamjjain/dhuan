@@ -9,6 +9,7 @@ import {
   createAirQualityOverlayEntry,
   mapAnalystRecord,
   newestObservation,
+  providerBandRanges,
   providerBands,
   readingsAreStale,
   readingsInView,
@@ -24,6 +25,13 @@ export {
 
 /** Station markers are a point reading, not an extent. */
 const STATION_MARKER_RADIUS_M = 6_000;
+/**
+ * A light ring under each marker, so a dark band (Severe, Very Poor) still
+ * reads on dark terrain without relying on hue. Ground geometry draws no
+ * outline, so the ring is a slightly larger fill beneath the colour.
+ */
+const STATION_RING_RADIUS_M = 7_600;
+const STATION_RING_COLOR = 'rgba(255, 255, 255, 0.55)';
 /** Readings listed in the readout card. */
 const READOUT_LIMIT = 5;
 
@@ -164,6 +172,21 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
         const color = Cesium.Color.fromCssColorString(reading.color);
         _dataSource.entities.add(
           new Cesium.Entity({
+            id: `air-quality:${reading.id}:ring`,
+            position,
+            ellipse: {
+              semiMajorAxis: STATION_RING_RADIUS_M,
+              semiMinorAxis: STATION_RING_RADIUS_M,
+              material: new Cesium.ColorMaterialProperty(
+                Cesium.Color.fromCssColorString(STATION_RING_COLOR),
+              ),
+              heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+              zIndex: 0,
+            },
+          }),
+        );
+        _dataSource.entities.add(
+          new Cesium.Entity({
             id: `air-quality:${reading.id}`,
             position,
             ellipse: {
@@ -171,11 +194,12 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
               // re-tessellates the clamped ground primitive every frame.
               semiMajorAxis: STATION_MARKER_RADIUS_M,
               semiMinorAxis: STATION_MARKER_RADIUS_M,
-              material: new Cesium.ColorMaterialProperty(color.withAlpha(0.35)),
+              material: new Cesium.ColorMaterialProperty(color.withAlpha(0.45)),
               outline: true,
               outlineColor: color.withAlpha(0.9),
               outlineWidth: 2,
               heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+              zIndex: 1,
             },
             properties: {
               provider: reading.provider,
@@ -244,6 +268,7 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
      * the rest. Coverage is stated plainly because this layer is not global.
      */
     getRowControls() {
+      const ranges = providerBandRanges(provider.id);
       const inView = readingsInView(_readings, viewRectangle(), READOUT_LIMIT);
       const newest = _readings.reduce(
         (max, reading) => Math.max(max, reading.observedMs || 0),
@@ -274,9 +299,15 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
                   ),
           units: provider.scale,
         },
+        // The legend keeps the published swatch colour; the map may lighten it.
         legend: providerBands(provider.id).map((band) => ({
           color: band.color,
-          label: t(band.label),
+          label: provider.legendRanges
+            ? t('{band} ({range})', {
+                band: t(band.label),
+                range: ranges.get(band.id),
+              })
+            : t(band.label),
         })),
         legendCategorical: true,
         list: {
@@ -285,8 +316,13 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
             id: reading.id,
             ordinal: index + 1,
             lead: `${reading.scale} ${reading.label}`,
-            // The dominant pollutant (CPCB) says why a station reads as it does.
-            text: [reading.name, reading.dominant, t(reading.risk)]
+            // The band in words beats the risk sentence on a one-line row, and
+            // the dominant pollutant (CPCB) says why a station reads as it does.
+            text: [
+              reading.name,
+              reading.bandLabel ? t(reading.bandLabel) : t(reading.risk),
+              reading.dominant,
+            ]
               .filter(Boolean)
               .join(' · '),
             accent: reading.color,

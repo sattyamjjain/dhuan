@@ -46,9 +46,11 @@ Open http://localhost:4173. Then, in the app, open **POWER UP** (bottom-right) a
 | Key             | Unlocks                                     | Get it                                                                      |
 | --------------- | ------------------------------------------- | --------------------------------------------------------------------------- |
 | `FIRMS_MAP_KEY` | NASA FIRMS active fires (the Punjab count)  | https://firms.modaps.eosdis.nasa.gov/api/map_key/ (free, instant)           |
-| `CPCB_API_KEY`  | CPCB stations across India (the Delhi dots) | https://www.data.gov.in/ → register → My Account → API key (free, instant)  |
+| `CPCB_API_KEY`  | CPCB stations across India (the Delhi dots) | https://www.data.gov.in/ → register → open any API resource → **Generate API Key** (free, instant) |
 
-Both keys stay on the server (`/api/firms`, `/api/cpcb`); the browser never sees them. The
+Both keys stay on the server (`/api/firms`, `/api/cpcb`); the browser never sees them. Do not
+use data.gov.in's public sample key: it returns ten rows a call out of about 3,750, so the
+layer would show nothing. The
 same two lines work in `.env` (copy `.env.example`). Docker and Pinokio installs are
 unchanged from upstream: `docker compose up` here, or install from Pinokio using this
 repository's URL.

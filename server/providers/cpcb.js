@@ -33,9 +33,15 @@ import { readResponseJsonCapped } from './common/http.js';
 export const CPCB_RESOURCE_ID = '3b01bcb8-0b14-4abf-b6f2-c1bfd384ba69';
 export const CPCB_UPSTREAM_URL = `https://api.data.gov.in/resource/${CPCB_RESOURCE_ID}`;
 export const CPCB_TTL_MS = 20 * 60_000;
-/** data.gov.in pages its resources; the full network is ~4,000 rows. */
+/**
+ * data.gov.in pages its resources; the full network is ~3,750 rows (one per
+ * station × pollutant). A key may be capped below the limit it is asked for
+ * — the public sample key returns at most 10 rows a call — so the walk steps
+ * by the rows actually returned, and the page cap bounds a capped key rather
+ * than trusting the limit.
+ */
 export const CPCB_PAGE_LIMIT = 1000;
-export const CPCB_MAX_PAGES = 10;
+export const CPCB_MAX_PAGES = 60;
 /** A 1,000-row page is a few hundred KB; anything past this is not a page. */
 export const CPCB_MAX_RESPONSE_BYTES = 8 * 1024 * 1024;
 const PAGE_TIMEOUT_MS = 20_000;
@@ -108,8 +114,12 @@ export function cpcbPageUrl(key, offset, limit = CPCB_PAGE_LIMIT) {
   return url.toString();
 }
 
-export function cpcbProxy({ fetchImpl = (...args) => fetch(...args) } = {}) {
-  const CACHE_DIR = path.join(process.cwd(), '.gev-cache');
+export function cpcbProxy({
+  fetchImpl = (...args) => fetch(...args),
+  cacheDir = path.join(process.cwd(), '.gev-cache'),
+  apiKey = () => String(process.env.CPCB_API_KEY || '').trim(),
+} = {}) {
+  const CACHE_DIR = cacheDir;
   const CACHE_PATH = path.join(CACHE_DIR, 'cpcb.json');
 
   /** @type {?{at: number, count: number, pages: number, records: Array<object>}} */
@@ -117,8 +127,6 @@ export function cpcbProxy({ fetchImpl = (...args) => fetch(...args) } = {}) {
   let diskChecked = false;
   /** @type {?Promise<?object>} single-flight refresh */
   let inflight = null;
-
-  const apiKey = () => String(process.env.CPCB_API_KEY || '').trim();
 
   async function readDiskOnce() {
     if (diskChecked) return;
@@ -172,22 +180,36 @@ export function cpcbProxy({ fetchImpl = (...args) => fetch(...args) } = {}) {
     };
   }
 
-  /** Walk the pages sequentially until the platform's reported total. */
+  /**
+   * Walk the pages sequentially until the platform's reported total, stepping
+   * by the rows each page actually returned. An empty page ends the walk; so
+   * does the page cap, which turns a 10-row-capped key into a bounded, if
+   * partial, snapshot rather than an endless one.
+   */
   async function refreshUpstream(key) {
     const now = Date.now();
     const records = [];
     let pages = 0;
     let total = null;
-    for (let offset = 0; pages < CPCB_MAX_PAGES; offset += CPCB_PAGE_LIMIT) {
+    let offset = 0;
+    while (pages < CPCB_MAX_PAGES) {
       const page = await fetchPage(key, offset);
       pages += 1;
+      if (page.records.length === 0) break;
       for (const record of page.records) records.push(record);
+      offset += page.records.length;
       if (total === null) total = page.total;
-      if (page.records.length < CPCB_PAGE_LIMIT) break;
       if (total !== null && records.length >= total) break;
     }
     if (records.length === 0) throw new Error('upstream returned no rows');
-    return { at: now, count: records.length, pages, records };
+    return {
+      at: now,
+      count: records.length,
+      total,
+      complete: total === null || records.length >= total,
+      pages,
+      records,
+    };
   }
 
   function buildPayload(entry, stale) {
@@ -196,6 +218,10 @@ export function cpcbProxy({ fetchImpl = (...args) => fetch(...args) } = {}) {
       stale,
       ttlMs: CPCB_TTL_MS,
       count: entry.records.length,
+      // Rows the platform said exist, and whether the walk reached them all
+      // (a capped key cannot). Absent from cache entries written before this.
+      total: entry.total ?? null,
+      complete: entry.complete ?? true,
       records: entry.records,
     };
   }
@@ -220,6 +246,8 @@ export function cpcbProxy({ fetchImpl = (...args) => fetch(...args) } = {}) {
             hasKey: Boolean(key),
             lastFetch: mem ? mem.at : null,
             count: mem ? mem.records.length : null,
+            total: mem?.total ?? null,
+            complete: mem ? (mem.complete ?? true) : null,
             stale: mem ? Date.now() - mem.at >= CPCB_TTL_MS : false,
             ttlMs: CPCB_TTL_MS,
           });

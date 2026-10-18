@@ -335,3 +335,57 @@ test('the provider factory resolves ids and falls back to the first provider', (
   assert.equal(createAirQualitySource({ providerId: 'cpcb' }).providerId, 'cpcb');
   assert.equal(createAirQualitySource().providerId, 'eccc');
 });
+
+// ── the live shape, as data.gov.in returned it on 18 Oct 2026 at 20:00 IST ──
+
+const LIVE_ROWS = [
+  ['Bihar', 'Araria', 'Kharahiya Basti, Araria - BSPCB', '26.146529', '87.454184', 'CO', '16', '36', '28'],
+  ['Bihar', 'Araria', 'Kharahiya Basti, Araria - BSPCB', '26.146529', '87.454184', 'OZONE', '14', '14', '14'],
+  ['Bihar', 'Aurangabad', 'Gurdeo Nagar, Aurangabad - BSPCB', '24.75746', '84.366208', 'PM2.5', '15', '68', '45'],
+  ['Bihar', 'Begusarai', 'Lohiyanagar, Begusarai - BSPCB', '25.42742023', '86.13886079', 'NH3', '2', '3', '2'],
+  ['Bihar', 'Bettiah', 'Kamalnath Nagar, Bettiah - BSPCB', '26.80365', '84.51954', 'PM10', '20', '23', '21'],
+  ['Bihar', 'Bettiah', 'Kamalnath Nagar, Bettiah - BSPCB', '26.80365', '84.51954', 'SO2', '13', '22', '17'],
+  ['Bihar', 'Bhagalpur', 'Mayaganj, Bhagalpur - BSPCB', '25.265194', '87.012947', 'PM2.5', '13', '302', '84'],
+  ['Bihar', 'Bhagalpur', 'DM Office_Kachari Chowk, Bhagalpur - BSPCB', '25.251013', '86.989001', 'NH3', '4', '4', '4'],
+  ['Bihar', 'Bihar Sharif', 'D M Colony, Bihar Sharif - BSPCB', '25.204762', '85.51496', 'PM2.5', '13', '193', '46'],
+  ['Bihar', 'Buxar', 'Charitra Van, Buxar - BSPCB', '25.56752', '83.966379', 'NH3', '3', '3', '3'],
+].map(([state, city, station, latitude, longitude, pollutant_id, min_value, max_value, avg_value]) => ({
+  country: 'India',
+  state,
+  city,
+  station,
+  last_update: '18-10-2026 20:00:00',
+  latitude,
+  longitude,
+  pollutant_id,
+  min_value,
+  max_value,
+  avg_value,
+}));
+const LIVE_NOW = Date.UTC(2026, 9, 18, 14, 30) + 50 * 60_000; // 20:50 IST
+
+test('the live data.gov.in shape parses, and a ten-row sample page qualifies no station', () => {
+  // Every row is current and well-formed, but the sample key's ten rows give
+  // no station three pollutants with a particulate, so CPCB's rule shows none.
+  assert.equal(parseCpcbTimestamp(LIVE_ROWS[0].last_update), Date.UTC(2026, 9, 18, 14, 30));
+  assert.deepEqual(normalizeCpcbReadings({ records: LIVE_ROWS }, LIVE_NOW), []);
+});
+
+test('with its other rows a live station reads its worst sub-index and names it', () => {
+  const mayaganj = LIVE_ROWS.find((row) => row.station.startsWith('Mayaganj'));
+  const extra = (pollutant_id, avg_value) => ({ ...mayaganj, pollutant_id, avg_value });
+  const readings = normalizeCpcbReadings(
+    { records: [...LIVE_ROWS, extra('PM10', '71'), extra('NO2', '12')] },
+    LIVE_NOW,
+  );
+  assert.equal(readings.length, 1);
+  const [reading] = readings;
+  assert.equal(reading.name, 'Mayaganj');
+  assert.equal(reading.city, 'Bhagalpur');
+  assert.equal(reading.value, 84);
+  assert.equal(reading.band, 'satisfactory');
+  assert.equal(reading.bandLabel, 'Satisfactory');
+  assert.equal(reading.dominant, 'PM2.5');
+  assert.equal(reading.lat, 25.265194);
+  assert.equal(reading.observedMs, Date.UTC(2026, 9, 18, 14, 30));
+});

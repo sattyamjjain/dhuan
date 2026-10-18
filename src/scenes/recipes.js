@@ -621,6 +621,87 @@ const EVENT_RECIPES = [BHOTE_KOSHI_NEPAL_BOOTSTRAP_RECIPE].filter(Boolean);
 
 const PUBLIC_SCENE_RECIPES = [
   {
+    // Dhuan's launch scene: Punjab's fires, the wind, Delhi's stations.
+    // Authored in scenes/smog-season-live.json as a version-5 document too,
+    // so a project saved before this recipe existed can import it, and the
+    // clip can be re-cut without a build.
+    id: 'smog-season-live',
+    title: msg('Smog Season Live'),
+    durationSec: 16,
+    style: 'normal',
+    ui: { hidePanels: true, hudMode: 'minimal', safeFrame: '16:9' },
+    layers: {
+      'local-firms': true,
+      wind: {
+        enabled: true,
+        params: { model: 'gfs', overlay: 'none', paused: false },
+      },
+      'air-quality': false,
+      flights: false,
+      satellites: false,
+      earthquakes: false,
+      traffic: false,
+    },
+    post: {
+      bloom: 0,
+      sharpen: true,
+      detectionMode: 'OFF',
+      mapStack: 'photoreal',
+    },
+    cameraPath: [
+      {
+        // i18n-ignore: stored shot title, matched verbatim
+        title: 'Punjab at dusk',
+        lat: 30.45,
+        lon: 75.55,
+        alt: 380000,
+        heading: 135,
+        pitch: -58,
+        roll: 0,
+        duration: 1.5,
+        hold: 2.5,
+      },
+      {
+        // i18n-ignore: stored shot title, matched verbatim
+        title: 'Downwind to Delhi',
+        lat: 29.2,
+        lon: 76.6,
+        alt: 240000,
+        heading: 140,
+        pitch: -50,
+        roll: 0,
+        duration: 3.5,
+        hold: 0,
+      },
+      {
+        // i18n-ignore: stored shot title, matched verbatim
+        title: 'Delhi NCR stations',
+        lat: 28.55,
+        lon: 77.15,
+        alt: 90000,
+        heading: 20,
+        pitch: -62,
+        roll: 0,
+        duration: 2,
+        hold: 3.5,
+        layers: { 'air-quality': true },
+      },
+      {
+        // i18n-ignore: stored shot title, matched verbatim
+        title: 'Pull back',
+        lat: 29.1,
+        lon: 76.7,
+        alt: 600000,
+        heading: 0,
+        pitch: -75,
+        roll: 0,
+        duration: 2.5,
+        hold: 0.5,
+        layers: { 'air-quality': true },
+      },
+    ],
+  },
+  {
     id: 'flights-radar',
     title: msg('Global Flights Radar'),
     durationSec: 30,
@@ -1016,6 +1097,10 @@ export function getSceneAppendRecipeById(id) {
 // and bindings match them verbatim). These are their display names; a title
 // the user typed shows as typed. Place names inside them stay Latin.
 const BUILTIN_SHOT_TITLES = new Set([
+  msg('Punjab at dusk'),
+  msg('Downwind to Delhi'),
+  msg('Delhi NCR stations'),
+  msg('Pull back'),
   msg('Global Incident Context'),
   msg('Nepal-Focused Globe Rotation'),
   msg('Bhote Koshi Regional Approach'),

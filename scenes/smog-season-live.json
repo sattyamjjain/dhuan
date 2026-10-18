@@ -1,0 +1,67 @@
+{
+  "version": 5,
+  "scenes": [
+    {
+      "id": "smog-season-live",
+      "title": "Smog Season Live",
+      "shots": [
+        {
+          "id": "punjab-dusk",
+          "title": "Punjab at dusk",
+          "durationSec": 1.5,
+          "holdSec": 2.5,
+          "camera": { "lat": 30.45, "lon": 75.55, "alt": 380000, "heading": 135, "pitch": -58, "roll": 0 },
+          "visual": { "style": "normal", "mapStack": "photoreal", "sharpen": { "enabled": true, "intensity": 0.5 }, "hud": { "visible": true, "variant": "minimal" } },
+          "layers": {
+            "local-firms": { "enabled": true },
+            "wind": { "enabled": true, "params": { "model": "gfs", "overlay": "none", "paused": false } },
+            "air-quality": { "enabled": false },
+            "flights": { "enabled": false },
+            "satellites": { "enabled": false },
+            "earthquakes": { "enabled": false },
+            "traffic": { "enabled": false }
+          }
+        },
+        {
+          "id": "downwind",
+          "title": "Downwind to Delhi",
+          "durationSec": 3.5,
+          "holdSec": 0,
+          "camera": { "lat": 29.2, "lon": 76.6, "alt": 240000, "heading": 140, "pitch": -50, "roll": 0 },
+          "visual": { "style": "normal", "mapStack": "photoreal", "sharpen": { "enabled": true, "intensity": 0.5 }, "hud": { "visible": true, "variant": "minimal" } },
+          "layers": {
+            "local-firms": { "enabled": true },
+            "wind": { "enabled": true, "params": { "model": "gfs", "overlay": "none", "paused": false } },
+            "air-quality": { "enabled": false }
+          }
+        },
+        {
+          "id": "delhi-stations",
+          "title": "Delhi NCR stations",
+          "durationSec": 2,
+          "holdSec": 3.5,
+          "camera": { "lat": 28.55, "lon": 77.15, "alt": 90000, "heading": 20, "pitch": -62, "roll": 0 },
+          "visual": { "style": "normal", "mapStack": "photoreal", "sharpen": { "enabled": true, "intensity": 0.5 }, "hud": { "visible": true, "variant": "minimal" } },
+          "layers": {
+            "local-firms": { "enabled": true },
+            "wind": { "enabled": true, "params": { "model": "gfs", "overlay": "none", "paused": false } },
+            "air-quality": { "enabled": true }
+          }
+        },
+        {
+          "id": "pull-back",
+          "title": "Pull back",
+          "durationSec": 2.5,
+          "holdSec": 0.5,
+          "camera": { "lat": 29.1, "lon": 76.7, "alt": 600000, "heading": 0, "pitch": -75, "roll": 0 },
+          "visual": { "style": "normal", "mapStack": "photoreal", "sharpen": { "enabled": true, "intensity": 0.5 }, "hud": { "visible": true, "variant": "minimal" } },
+          "layers": {
+            "local-firms": { "enabled": true },
+            "wind": { "enabled": true, "params": { "model": "gfs", "overlay": "none", "paused": false } },
+            "air-quality": { "enabled": true }
+          }
+        }
+      ]
+    }
+  ]
+}

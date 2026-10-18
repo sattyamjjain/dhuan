@@ -16,6 +16,7 @@ How to read this:
 | Source                                                                | Used for                                                                                                                            | License / terms                                                                                                                                                                                                                                                                                                                                       | Attribution                                                                                                                                 |
 | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | **NOAA GFS (wind)** (`noaa-gfs-bdp-pds.s3.amazonaws.com`) | Global 10 m wind, optional 2 m temperature and mean sea-level pressure for Wind. Keyless; latest 6-hourly 0.25° cycle, byte-range GRIB2 reads, cached for an hour | U.S. public domain (NOAA); keyless via NOAA Open Data on AWS | "NOAA Global Forecast System (GFS)" (courtesy; not an endorsement) |
+| **CPCB real-time AQI (India)** (`api.data.gov.in`, resource `3b01bcb8-0b14-4abf-b6f2-c1bfd384ba69`) | The Air quality layer's India provider: hourly station readings from the Central Pollution Control Board's CAAQMS network, one row per station × pollutant with the NAQI sub-index. Keyed (`CPCB_API_KEY`, free, server-side only); the `/api/cpcb` proxy caches 20 min and serves stale on failure | [Government Open Data License – India (GODL)](https://data.gov.in/government-open-data-license-india) | "Central Pollution Control Board via data.gov.in" — shown in-app on the Air quality card |
 | **ECMWF IFS (wind)** (`data.ecmwf.int/forecasts`, ECMWF Open Data) | The alternative Wind model: 10 m wind, optional 2 m temperature and mean sea-level pressure. Keyless; latest 6-hourly 0.25° run, byte-range GRIB2 reads, cached for an hour | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) plus the [ECMWF Terms of Use](https://apps.ecmwf.int/datasets/licences/general/) | "This service is based on data and products of the European Centre for Medium-Range Weather Forecasts (ECMWF)", with the CC BY 4.0 link, the modification notice and ECMWF's liability disclaimer — shown in-app |
 | **NOAA nowCOAST observed weather** (`nowcoast.noaa.gov/geoserver/observations/{weather_radar,satellite}/ows`, WMS 1.1.1) | Rain radar (MRMS base reflectivity, contiguous US, about 4-minute updates) and Satellite clouds (GOES-19/18 Band 14 regional infrared, about 5-minute updates; global infrared mosaic, hourly). Keyless; layer metadata refreshed every 2 minutes, exact-time images cached for up to 24 hours | [NOAA disclaimer](https://oceanservice.noaa.gov/disclaimer.html) | "NOAA nowCOAST · NWS/OAR MRMS radar; NESDIS GOES and global satellite partners" |
 | **NOAA nowCOAST lightning density** (`nowcoast.noaa.gov/geoserver/observations/lightning_detection/ows`) | Lightning density: 15-minute accumulated strike density on an approximately 8 km grid, Americas and Pacific. Keyless; layer metadata refreshed every 10 minutes, exact-time images cached for up to 24 hours | NOAA Level-5 derived product from Vaisala NLDN/GLD360; the [product description](https://ocean.weather.gov/lightning/lightning_pdd.php) permits public distribution of this density product, not of raw Vaisala detections | "NOAA/NWS nowCOAST; derived from Vaisala NLDN/GLD360" |
@@ -237,6 +238,24 @@ credits it anyway as `SPECS: CCTV-DATABASE.COM` beside any spec line it renders.
 ### Bundled OpenStreetMap data
 
 Bundled OSM-derived data is distributed under [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/), separately from the MIT code: [datacenters](src/data/local_data/datacenters/), [dams](src/data/local_data/dams/) (via Open Infrastructure Map), [military names](src/data/local_data/osm_military_names/), and [OSM test fixtures](src/data/fixtures/). Keep © OpenStreetMap contributors and offer modified databases under ODbL.
+
+### CPCB via data.gov.in (India)
+
+The Air quality layer's `cpcb` provider reads the Central Pollution Control Board's
+hourly station feed as republished on the Open Government Data platform
+(data.gov.in, resource "Real time Air Quality Index from various location"). The
+data is released under the Government Open Data License – India (GODL), which
+requires attribution to the provider and a note that the data is used under that
+licence. The in-app card names the network; this file names the licence. The
+browser never talks to data.gov.in: the `/api/cpcb` proxy holds `CPCB_API_KEY`
+server-side, walks the resource's pages, trims each row to the fields the client
+uses, caches for twenty minutes and serves stale on upstream failure.
+
+A station's index is CPCB's own rule — the worst sub-index among the pollutants
+it reported, provided at least three were reported and one is PM2.5 or PM10 —
+and the card says which pollutant set it. Readings are stamped with CPCB's own
+`last_update` (IST), dropped after six hours, and the layer reports STALE when
+the newest is older than three. This fork does not host a copy of the data.
 
 ### NASA FIRMS acknowledgement
 

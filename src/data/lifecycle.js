@@ -1088,6 +1088,11 @@ export class LayerLifecycle {
     const entry = this.layers.get(layerId);
     if (!entry) return { intentEpoch: null, promise: Promise.resolve() };
     const desiredState = Boolean(shouldEnable);
+    // Policy, not state: an edition that excludes a layer refuses every
+    // enable — panel, voice, share link or stored state — rather than hiding
+    // the toggle and trusting that nothing else reaches it.
+    if (desiredState && entry.module?.excludedFromEdition)
+      return { intentEpoch: null, promise: Promise.resolve(false) };
     if (!desiredState) cancelCameraArrival(this.viewer);
     if (entry.destroying) {
       return {

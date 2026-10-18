@@ -1,6 +1,7 @@
 import { adaptFirmsRecords } from '../../data/firmsAdapt.js';
 import { fireDetectionKey } from '../../data/firmsLabels.js';
 import { msg } from '../../i18n/index.js';
+import { countFiresInRegions } from '../../data/fireRegions.js';
 
 export function createIngestion({
   layerState,
@@ -33,6 +34,8 @@ export function createIngestion({
         layerState._keyRequired = true;
         layerState._error = null;
         layerState._stale = false;
+        layerState._regionCounts = [];
+        layerState._rowControlsListener?.();
         return;
       }
       layerState._keyRequired = false;
@@ -46,6 +49,12 @@ export function createIngestion({
         (a, b) => b.frp - a.frp,
       );
       layerState._count = layerState._fires.length;
+      // Regional counts are per dataset, like the cells: one pass per refresh.
+      layerState._regionCounts = countFiresInRegions(
+        layerState._fires,
+        config.regions,
+      );
+      layerState._rowControlsListener?.();
       // Data age, not response age: a stale proxy payload truthfully reads old.
       layerState._lastUpdate = Number.isFinite(payload?.fetchedAt)
         ? payload.fetchedAt

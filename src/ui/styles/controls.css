@@ -451,6 +451,15 @@ html:not([lang='en']) .panel-collapse-btn {
   animation: pulse 2s ease-in-out infinite;
 }
 
+/* Dhuan: the upstream credit under the loader status, quieter than the status. */
+.loader-credit {
+  margin-top: 6px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
 @keyframes pulse {
   0%,
   100% {

@@ -1,3 +1,5 @@
+import { EDITION } from './edition.js';
+import { fireCounterForHud } from './hudFireCounter.js';
 import { applicationServices } from './services/application.js';
 /**
  * @module hud
@@ -768,7 +770,20 @@ export class IntelHUD {
         zone: localTag,
       },
     );
-    return provenance ? `${line} | ${provenance}` : line;
+    // The edition's fire count rides the same line, after the telemetry and
+    // before the feed-state suffix. Absent rather than zero when the fire
+    // layer is off, keyless or not yet refreshed.
+    const fires = fireCounterForHud(
+      this._dataManager?.getAll?.() || [],
+      EDITION.hudFireRegionId,
+    );
+    const fireTag = fires
+      ? t('FIRES {count} {region}', {
+          count: formatNumber(fires.count),
+          region: fires.label,
+        })
+      : null;
+    return [line, fireTag, provenance].filter(Boolean).join(' | ');
   }
 
   /**

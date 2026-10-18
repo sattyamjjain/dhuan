@@ -33,6 +33,7 @@ import { createInfrastructureLayers } from '../data/infrastructure.js';
 import { localGeoJsonServices } from './localGeojsonServices.js';
 import { createBhoteKoshiEventLayer } from '../data/bhoteKoshiEvent.js';
 import { createBhoteKoshiLocatorLayer } from '../data/bhoteKoshiLocator.js';
+import { EDITION, isExcludedLayerId } from '../edition.js';
 
 /**
  * Hardware-local layers are registered like any other but never enter share
@@ -47,6 +48,30 @@ export const APPLICATION_LAYER_METADATA = Object.freeze([
   ...LAYER_STATE_REGISTRY,
   ...LOCAL_ONLY_LAYER_METADATA,
 ]);
+
+/**
+ * Keep a layer out of this edition without unregistering it.
+ *
+ * The instance still exists — the share-link token ledger, the control
+ * surface and dependent layers all expect it — but the panel hides it, voice
+ * skips it, and the manager refuses to enable it (see
+ * `_setEnabledWithIntent`). A frozen module cannot carry the flags, and that
+ * is a startup failure rather than a silently visible layer.
+ */
+export function excludeLayerFromEdition(layer, editionId = EDITION.id) {
+  for (const [key, value] of [
+    ['showInTogglePanel', false],
+    ['excludedFromEdition', editionId],
+  ]) {
+    Object.defineProperty(layer, key, {
+      value,
+      enumerable: true,
+      configurable: true,
+      writable: true,
+    });
+  }
+  return layer;
+}
 
 /** Construct the current catalog without choosing any source provider.
  * Scene engines remain page-owned; layers and classification have this app's lifetime.
@@ -104,81 +129,83 @@ export function createApplicationCatalog({
     const satellites = createApplicationSatellites({
       source: sources.satellites,
     });
-    const catalog = createLayerCatalog(
-      [
-        createBhoteKoshiEventLayer(),
-        createBhoteKoshiLocatorLayer({
-          boundaryResolver: nepalBoundaryResolver,
-        }),
+    const layers = [
+      createBhoteKoshiEventLayer(),
+      createBhoteKoshiLocatorLayer({
+        boundaryResolver: nepalBoundaryResolver,
+      }),
+      flights,
+      military,
+      createApplicationLocalAdsb({
+        surface,
+        enrichment: sources.flights,
+        displayParams: () => flights.getParams(),
+        ...(resolveAsset ? { resolveAsset } : {}),
+      }),
+      createApplicationEarthquakes({ source: sources.earthquakes }),
+      createApplicationAirQuality({ source: sources['air-quality'] }),
+      createApplicationFirePerimeters({
+        source: sources['fire-perimeters'],
+      }),
+      createApplicationGnssIntegrity({
+        source: sources['gnss-integrity'],
+      }),
+      createApplicationAlpr({ surface, source: sources.alpr }),
+      createApplicationStreetLevel({
+        surface,
+        sources: { mapillary: sources.mapillary },
+        providers: streetLevelProviders,
+      }),
+      satellites,
+      createApplicationLaunches({ source: sources.launches, satellites }),
+      createApplicationTraffic({ source: sources.traffic, surface }),
+      createApplicationCctv({ surface, source: sources.cctv }),
+      createApplicationRadio({ surface, source: sources.radio }),
+      createApplicationTransit({ surface, source: sources.transit }),
+      createApplicationBikeshare({ source: sources.bikeshare }),
+      createApplicationDirections({ source: sources.directions }),
+      createApplicationRecentImagery({ source: sources['recent-imagery'] }),
+      vessels,
+      installations,
+      createApplicationAwareness({
         flights,
         military,
-        createApplicationLocalAdsb({
-          surface,
-          enrichment: sources.flights,
-          displayParams: () => flights.getParams(),
-          ...(resolveAsset ? { resolveAsset } : {}),
-        }),
-        createApplicationEarthquakes({ source: sources.earthquakes }),
-        createApplicationAirQuality({ source: sources['air-quality'] }),
-        createApplicationFirePerimeters({
-          source: sources['fire-perimeters'],
-        }),
-        createApplicationGnssIntegrity({
-          source: sources['gnss-integrity'],
-        }),
-        createApplicationAlpr({ surface, source: sources.alpr }),
-        createApplicationStreetLevel({
-          surface,
-          sources: { mapillary: sources.mapillary },
-          providers: streetLevelProviders,
-        }),
-        satellites,
-        createApplicationLaunches({ source: sources.launches, satellites }),
-        createApplicationTraffic({ source: sources.traffic, surface }),
-        createApplicationCctv({ surface, source: sources.cctv }),
-        createApplicationRadio({ surface, source: sources.radio }),
-        createApplicationTransit({ surface, source: sources.transit }),
-        createApplicationBikeshare({ source: sources.bikeshare }),
-        createApplicationDirections({ source: sources.directions }),
-        createApplicationRecentImagery({ source: sources['recent-imagery'] }),
         vessels,
         installations,
-        createApplicationAwareness({
-          flights,
-          military,
-          vessels,
-          installations,
-        }),
-        createWindLayer({ feed: sources.wind, clock: weatherClock }),
-        createWeatherLayer({
-          feed: sources.weather,
-          id: 'weather-radar',
-          clock: weatherClock,
-        }),
-        createWeatherLayer({
-          feed: sources.weather,
-          id: 'weather-satellite',
-          clock: weatherClock,
-        }),
-        createWeatherLayer({
-          feed: sources.weather,
-          id: 'weather-lightning',
-          clock: weatherClock,
-        }),
-        createCyclonesLayer({ feed: sources.cyclones }),
-        ...createInfrastructureLayers(localGeoJsonServices),
-        createApplicationCables({ source: sources.cables }),
-        createApplicationFirms({
-          surface,
-          id: 'local-firms',
-          name: 'FIRMS Active Fires',
-          icon: '▲',
-          source: 'NASA FIRMS · LIVE',
-          feed: sources.firms,
-        }),
-      ],
-      metadata,
-    );
+      }),
+      createWindLayer({ feed: sources.wind, clock: weatherClock }),
+      createWeatherLayer({
+        feed: sources.weather,
+        id: 'weather-radar',
+        clock: weatherClock,
+      }),
+      createWeatherLayer({
+        feed: sources.weather,
+        id: 'weather-satellite',
+        clock: weatherClock,
+      }),
+      createWeatherLayer({
+        feed: sources.weather,
+        id: 'weather-lightning',
+        clock: weatherClock,
+      }),
+      createCyclonesLayer({ feed: sources.cyclones }),
+      ...createInfrastructureLayers(localGeoJsonServices),
+      createApplicationCables({ source: sources.cables }),
+      createApplicationFirms({
+        surface,
+        id: 'local-firms',
+        name: 'FIRMS Active Fires',
+        icon: '▲',
+        source: 'NASA FIRMS · LIVE',
+        feed: sources.firms,
+        regions: EDITION.fireRegions,
+        regionCaveat: EDITION.fireCountCaveat,
+      }),
+    ];
+    for (const layer of layers)
+      if (isExcludedLayerId(layer?.id)) excludeLayerFromEdition(layer);
+    const catalog = createLayerCatalog(layers, metadata);
     return Object.freeze({
       ...catalog,
       getSourceAvailability: sourceComposition.createAvailabilityLookup(

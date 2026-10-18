@@ -1,5 +1,5 @@
 import { fireDetectionKey } from '../../data/firmsLabels.js';
-import { t } from '../../i18n/index.js';
+import { t, tn } from '../../i18n/index.js';
 import { REFRESH_INTERVAL_MS } from './policy.js';
 
 export function createQueries({
@@ -9,7 +9,8 @@ export function createQueries({
   config,
   feed,
 }) {
-  const { id, name, icon, source } = config;
+  const { id, name, icon, source, regions, regionCaveat } = config;
+  const hasRegions = Array.isArray(regions) && regions.length > 0;
 
   const methods = {
     /** Return the selected detection as a plain record for application consumers. */
@@ -86,6 +87,9 @@ export function createQueries({
       return {
         count: layerState._count,
         cells: layerState._cellCount,
+        // Detections per configured region, for the HUD and the analyst
+        // tools. Empty when no region is configured or no key is set.
+        regions: layerState._regionCounts,
         lastUpdate: layerState._lastUpdate,
         loading: layerState._loading,
         stale: layerState._stale,
@@ -101,6 +105,32 @@ export function createQueries({
             : layerState._error,
         loadingLabel,
       };
+    },
+
+    /**
+     * Regional counts under the toggle, with the caveat that travels with
+     * every count: a morning polar pass is a floor, not a tally. Null while
+     * nothing is loaded, so the row stays a plain toggle until there is a
+     * number to show.
+     */
+    getRowControls() {
+      if (!hasRegions || !layerState._regionCounts.length) return null;
+      if (layerState._keyRequired || !layerState._lastUpdate) return null;
+      const lines = layerState._regionCounts.map((region) =>
+        tn(
+          region.count,
+          '{count} fire detected in {region} in the last 24 h (NASA VIIRS/MODIS).',
+          '{count} fires detected in {region} in the last 24 h (NASA VIIRS/MODIS).',
+          { region: t(region.label) },
+        ),
+      );
+      if (regionCaveat) lines.push(t(regionCaveat));
+      return { info: lines.join(' ') };
+    },
+
+    setRowControlsListener(listener) {
+      layerState._rowControlsListener =
+        typeof listener === 'function' ? listener : null;
     },
 
     /**

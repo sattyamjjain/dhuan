@@ -81,6 +81,14 @@ export const KEY_SETUP_KEYS = Object.freeze([
     tier: 'free',
   }),
   Object.freeze({
+    id: 'cpcb',
+    title: 'CPCB via data.gov.in', // i18n-ignore: provider product name
+    unlocks: msg('Hourly CPCB air-quality stations across India'),
+    getUrl: 'https://www.data.gov.in/user/register',
+    envVars: Object.freeze(['CPCB_API_KEY']),
+    tier: 'free',
+  }),
+  Object.freeze({
     id: 'tomtom',
     title: 'TOMTOM', // i18n-ignore: provider product name
     unlocks: msg('Real live traffic (keyless runs a simulation)'),

@@ -47,6 +47,46 @@ export function flyToPreset(viewer, presetName, duration = 3.0) {
 }
 
 /**
+ * Set the camera on load with a cinematic fly-in: straight down from the
+ * approach pose, then settle into the rest pose after a brief pause.
+ * @param {Cesium.Viewer} viewer
+ * @param {{approach: object, rest: object}} home - Ellipsoid metres, degrees.
+ * @returns {Function} Cancels the pending or active startup flight.
+ */
+export function flyToHome(viewer, home) {
+  const { approach, rest } = home;
+  viewer.camera.setView({
+    destination: Cesium.Cartesian3.fromDegrees(
+      approach.lon,
+      approach.lat,
+      approach.alt,
+    ),
+    orientation: {
+      heading: Cesium.Math.toRadians(approach.heading ?? 0),
+      pitch: Cesium.Math.toRadians(approach.pitch ?? -90),
+      roll: 0.0,
+    },
+  });
+  const timer = setTimeout(() => {
+    if (viewer.isDestroyed()) return;
+    viewer.camera.flyTo({
+      destination: Cesium.Cartesian3.fromDegrees(rest.lon, rest.lat, rest.alt),
+      orientation: {
+        heading: Cesium.Math.toRadians(rest.heading ?? 0),
+        pitch: Cesium.Math.toRadians(rest.pitch ?? -35),
+        roll: 0.0,
+      },
+      duration: 4.0,
+      easingFunction: Cesium.EasingFunction.CUBIC_IN_OUT,
+    });
+  }, 500);
+  return () => {
+    clearTimeout(timer);
+    if (!viewer.isDestroyed()) viewer.camera.cancelFlight();
+  };
+}
+
+/**
  * Set camera to Austin on load with a cinematic fly-in.
  * @returns {Function} Cancels the pending or active startup flight.
  */

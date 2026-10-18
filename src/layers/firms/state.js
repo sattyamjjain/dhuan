@@ -47,6 +47,14 @@ export function createFirmsState({ services, config }) {
 
   layerState._cellCount = 0;
 
+  /** Detections per configured region (see data/fireRegions.js), per refresh. */
+
+  layerState._regionCounts = [];
+
+  /** Layers-panel refresh hook, so the regional count re-renders on data. */
+
+  layerState._rowControlsListener = null;
+
   layerState._lastUpdate = null;
 
   layerState._currentLodId = null;

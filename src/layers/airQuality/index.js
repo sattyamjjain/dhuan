@@ -2,31 +2,44 @@ import * as Cesium from 'cesium';
 import { msg, t, tn } from '../../i18n/index.js';
 import { translateFeedError } from '../../ui/statusText.js';
 import {
-  AIR_QUALITY_BANDS,
   AIR_QUALITY_OVERLAY_SOURCE_ID,
   AIR_QUALITY_OVERLAY_COHORT_LIMIT,
   AIR_QUALITY_OVERLAY_COLLISION_CAPACITY,
-  AIR_QUALITY_PROVIDERS,
+  airQualityProvider,
   createAirQualityOverlayEntry,
   mapAnalystRecord,
   newestObservation,
+  providerBands,
   readingsAreStale,
   readingsInView,
   selectAirQualityOverlayCohort,
 } from './model.js';
 export * from './model.js';
-export { createEcccAirQualitySource } from './source.js';
+export {
+  createAirQualitySource,
+  createCpcbAirQualitySource,
+  createEcccAirQualitySource,
+  resolveAirQualityProviderId,
+} from './source.js';
 
 /** Station markers are a point reading, not an extent. */
 const STATION_MARKER_RADIUS_M = 6_000;
 /** Readings listed in the readout card. */
 const READOUT_LIMIT = 5;
 
-/** Own one air-quality display, its refresh lifecycle, and its readout card. */
+/**
+ * Own one air-quality display, its refresh lifecycle, and its readout card.
+ *
+ * The source names its provider (`providerId`); the layer takes its scale,
+ * legend, coverage line and stale rule from that descriptor, so a second
+ * network is a second source, not a second layer. A source that names none
+ * is ECCC's, the first registered provider.
+ */
 export function createAirQualityLayer({ source, overlayHost } = {}) {
   if (typeof source?.getSnapshot !== 'function')
     throw new TypeError('Air quality requires a snapshot source');
   if (!overlayHost) throw new TypeError('Air quality requires an overlay host');
+  const provider = airQualityProvider(source.providerId);
   let _viewer = null;
   let _request = null;
   let _dataSource = null;
@@ -34,6 +47,7 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
   let _count = 0;
   let _lastUpdate = null;
   let _lastError = null;
+  let _keyRequired = false;
   let _enabled = false;
   let rowControlsListener = null;
 
@@ -56,7 +70,10 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
     id: 'air-quality',
     name: 'Air quality',
     icon: '◍',
-    source: 'ECCC MSC GeoMet',
+    source: provider.sourceLabel,
+    // The provider key the proxy needs, if any (null for keyless ECCC). The
+    // panel names the variable from the key registry while stats.keyRequired.
+    requiresKeyId: provider.requiresKeyId,
     updateInterval: 1_200_000,
 
     init(viewer) {
@@ -69,6 +86,7 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
       _count = 0;
       _lastUpdate = null;
       _lastError = null;
+      _keyRequired = false;
       _enabled = false;
       overlayHost.setVisible(AIR_QUALITY_OVERLAY_SOURCE_ID, false);
     },
@@ -97,12 +115,25 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
       const request = new AbortController();
       _request = request;
       try {
-        const readings = await source.getSnapshot({ signal: request.signal });
+        const snapshot = await source.getSnapshot({ signal: request.signal });
         // A superseded or aborted request must not touch the scene, and neither
         // must one that lands after the layer was switched off.
         if (request.signal.aborted || _request !== request || !_enabled)
           return false;
-        _readings = readings;
+        // A keyed provider without its key is a step the operator can take,
+        // not a fault: clear the display and let the row say KEY REQUIRED.
+        if (!Array.isArray(snapshot) && snapshot?.keyRequired === true) {
+          _keyRequired = true;
+          _readings = [];
+          this._render();
+          _count = 0;
+          _lastUpdate = Date.now();
+          _lastError = null;
+          notify();
+          return false;
+        }
+        _keyRequired = false;
+        _readings = snapshot;
         this._render();
         _count = _readings.length;
         _lastUpdate = Date.now();
@@ -153,6 +184,8 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
               band: reading.band,
               name: reading.name,
               zone: reading.zone,
+              city: reading.city ?? null,
+              dominant: reading.dominant ?? null,
               risk: reading.risk,
               observedMs: reading.observedMs,
               note: reading.note,
@@ -199,18 +232,18 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
       _count = 0;
       _lastUpdate = null;
       _lastError = null;
+      _keyRequired = false;
       rowControlsListener = null;
     },
 
     /**
-     * Readout descriptor for the Weather panel: the band legend, and the worst
-     * readings currently in view.
+     * Readout descriptor for the Weather panel: the provider's band legend,
+     * and the worst readings currently in view.
      *
      * `readout: true` renders the toggle and source line only; the card owns
      * the rest. Coverage is stated plainly because this layer is not global.
      */
     getRowControls() {
-      const provider = AIR_QUALITY_PROVIDERS.eccc;
       const inView = readingsInView(_readings, viewRectangle(), READOUT_LIMIT);
       const newest = _readings.reduce(
         (max, reading) => Math.max(max, reading.observedMs || 0),
@@ -226,20 +259,22 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
           coverage: t(provider.coverage),
           validTime: newest ? new Date(newest).toISOString() : undefined,
           detail: `${provider.network} · ${provider.scale}`,
-          status: _lastError
-            ? translateFeedError(_lastError)
-            : _count === 0
-              ? _lastUpdate === null
-                ? t('No readings available')
-                : t('No current readings')
-              : tn(
-                  _count,
-                  '{count} station reporting',
-                  '{count} stations reporting',
-                ),
+          status: _keyRequired
+            ? t('KEY REQUIRED')
+            : _lastError
+              ? translateFeedError(_lastError)
+              : _count === 0
+                ? _lastUpdate === null
+                  ? t('No readings available')
+                  : t('No current readings')
+                : tn(
+                    _count,
+                    '{count} station reporting',
+                    '{count} stations reporting',
+                  ),
           units: provider.scale,
         },
-        legend: AIR_QUALITY_BANDS.map((band) => ({
+        legend: providerBands(provider.id).map((band) => ({
           color: band.color,
           label: t(band.label),
         })),
@@ -250,7 +285,10 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
             id: reading.id,
             ordinal: index + 1,
             lead: `${reading.scale} ${reading.label}`,
-            text: `${reading.name} · ${t(reading.risk)}`,
+            // The dominant pollutant (CPCB) says why a station reads as it does.
+            text: [reading.name, reading.dominant, t(reading.risk)]
+              .filter(Boolean)
+              .join(' · '),
             accent: reading.color,
           })),
         },
@@ -284,10 +322,17 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
       return {
         count: _count,
         lastUpdate: _lastUpdate,
-        error: _lastError,
+        // The machine-readable half of the keyless state (FIRMS's contract):
+        // without it "no key configured" is indistinguishable from a fault.
+        keyRequired: _keyRequired,
+        error: _keyRequired ? t('KEY REQUIRED') : _lastError,
         observedAt: newestObservation(_readings),
         // Only a completed refresh can be stale; before one there is no feed.
-        stale: _lastUpdate !== null && readingsAreStale(_readings),
+        // A missing key is a step to take, not a stale feed.
+        stale:
+          _lastUpdate !== null &&
+          !_keyRequired &&
+          readingsAreStale(_readings, Date.now(), provider.staleAfterMs),
       };
     },
   };

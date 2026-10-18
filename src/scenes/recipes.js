@@ -676,11 +676,11 @@ const PUBLIC_SCENE_RECIPES = [
       {
         // i18n-ignore: stored shot title, matched verbatim
         title: 'Delhi NCR stations',
-        lat: 28.55,
-        lon: 77.15,
-        alt: 90000,
-        heading: 20,
-        pitch: -62,
+        lat: 28.38,
+        lon: 77.2,
+        alt: 110000,
+        heading: 0,
+        pitch: -72,
         roll: 0,
         duration: 2,
         hold: 3.5,

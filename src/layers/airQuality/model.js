@@ -208,6 +208,11 @@ export const AIR_QUALITY_PROVIDERS = Object.freeze({
     requiresKeyId: 'cpcb',
     /** NAQI bands are numeric ranges people know; the legend says them. */
     legendRanges: true,
+    /**
+     * Delhi's stations sit three to five kilometres apart, so ECCC's 6 km
+     * marker turns the city into one blob; a smaller point keeps them apart.
+     */
+    markerRadiusM: 2_500,
     staleAfterMs: CPCB_STALE_AFTER_MS,
     maxObservationAgeMs: OBSERVATION_MAX_AGE_MS,
     bandScale: NAQI_BANDS,

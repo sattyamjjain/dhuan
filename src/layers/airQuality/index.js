@@ -23,14 +23,14 @@ export {
   resolveAirQualityProviderId,
 } from './source.js';
 
-/** Station markers are a point reading, not an extent. */
+/** Station markers are a point reading, not an extent; a provider may size its own. */
 const STATION_MARKER_RADIUS_M = 6_000;
 /**
  * A light ring under each marker, so a dark band (Severe, Very Poor) still
  * reads on dark terrain without relying on hue. Ground geometry draws no
  * outline, so the ring is a slightly larger fill beneath the colour.
  */
-const STATION_RING_RADIUS_M = 7_600;
+const STATION_RING_SCALE = 1.27;
 const STATION_RING_COLOR = 'rgba(255, 255, 255, 0.55)';
 /** Readings listed in the readout card. */
 const READOUT_LIMIT = 5;
@@ -48,6 +48,8 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
     throw new TypeError('Air quality requires a snapshot source');
   if (!overlayHost) throw new TypeError('Air quality requires an overlay host');
   const provider = airQualityProvider(source.providerId);
+  const markerRadiusM = provider.markerRadiusM || STATION_MARKER_RADIUS_M;
+  const ringRadiusM = markerRadiusM * STATION_RING_SCALE;
   let _viewer = null;
   let _request = null;
   let _dataSource = null;
@@ -175,8 +177,8 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
             id: `air-quality:${reading.id}:ring`,
             position,
             ellipse: {
-              semiMajorAxis: STATION_RING_RADIUS_M,
-              semiMinorAxis: STATION_RING_RADIUS_M,
+              semiMajorAxis: ringRadiusM,
+              semiMinorAxis: ringRadiusM,
               material: new Cesium.ColorMaterialProperty(
                 Cesium.Color.fromCssColorString(STATION_RING_COLOR),
               ),
@@ -192,8 +194,8 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
             ellipse: {
               // Static axes, as in the earthquake layer: a per-frame axis
               // re-tessellates the clamped ground primitive every frame.
-              semiMajorAxis: STATION_MARKER_RADIUS_M,
-              semiMinorAxis: STATION_MARKER_RADIUS_M,
+              semiMajorAxis: markerRadiusM,
+              semiMinorAxis: markerRadiusM,
               material: new Cesium.ColorMaterialProperty(color.withAlpha(0.45)),
               outline: true,
               outlineColor: color.withAlpha(0.9),

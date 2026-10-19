@@ -58,7 +58,13 @@ plays the scene without the Google Maps toast. The Data keys dialog is narrowed
 client-side to `EDITION.keyIds` (`initKeySetup({ keyIds })` from the standalone
 entry); the location tray lists `src/dhuan/cities.js` (Delhi, Chandigarh,
 Ludhiana, Amritsar, Lucknow) through `services.CITY_POIS` and `presets`-aware
-`flyToPresetLocation`/`flyToPOI`. Under the wordmark a story strip (`src/dhuan/storyStrip.js`) shows
+`flyToPresetLocation`/`flyToPOI`. Launch-night resilience (19 Oct 2026): the
+smog mission is `tolerateLayerFailures`, so the launcher closes once any story
+feed answers and the strip offers "Turn on …" for the one that did not; the
+CPCB proxy warms its cache at boot (`warmOnStart`) and allows 45 s per
+data.gov.in page (25–30 s observed), with the browser source waiting 40 s. The
+dev server must run on Node 24 (`engines`): Node 22 cannot instantiate the
+wind GRIB decoder's wasm and Wind reports "upstream unavailable". Under the wordmark a story strip (`src/dhuan/storyStrip.js`) shows
 the Punjab + Haryana fire count, Delhi NCR's worst CPCB station with its band in
 words, the time the numbers were taken, and a button that plays Smog Season Live
 once (`startScene(id, { single: true })`). The Layers panel opens by default and

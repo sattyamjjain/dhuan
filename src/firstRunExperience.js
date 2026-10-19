@@ -130,6 +130,11 @@ export const FIRST_RUN_MISSIONS = Object.freeze({
     kind: 'globe',
     layerIds: EDITION.firstRun.missionLayerIds,
     keepCamera: true,
+    // A public feed that is slow tonight must not hold the door shut: the
+    // launcher closes once any story feed answers, and the strip offers
+    // "Turn on …" for the one that did not. Only every feed failing keeps
+    // the launcher open with the list.
+    tolerateLayerFailures: true,
     busyKey: msg('Starting the smog season view…'),
   }),
 });
@@ -309,7 +314,10 @@ export async function runFirstRunChoice(
   const failedLayerIds = outcomes
     .filter((entry) => !entry.ok)
     .map((entry) => entry.layerId);
-  return { ok: failedLayerIds.length === 0, choice, failedLayerIds };
+  const ok = mission.tolerateLayerFailures
+    ? failedLayerIds.length < outcomes.length
+    : failedLayerIds.length === 0;
+  return { ok, choice, failedLayerIds };
 }
 
 /**

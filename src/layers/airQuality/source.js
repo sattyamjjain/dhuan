@@ -138,14 +138,16 @@ const CPCB_MAX_RESPONSE_BYTES = 8 * 1024 * 1024;
  * @param {object} [options]
  * @param {Function} [options.fetchImpl] - Injected fetch, for tests.
  * @param {() => number} [options.now] - Clock seam, for tests.
- * @param {number} [options.timeoutMs=15000] - Deadline for the request.
+ * @param {number} [options.timeoutMs=40000] - Deadline for the request. The
+ *   proxy may be mid-walk through a slow data.gov.in on a cold cache, and a
+ *   layer that waits reads better than one that reports a fault at 15 s.
  * @param {string} [options.endpoint] - Proxy path, for embedding hosts.
  * @returns {{providerId: string, getSnapshot: Function}}
  */
 export function createCpcbAirQualitySource({
   fetchImpl = (...args) => globalThis.fetch(...args),
   now = () => Date.now(),
-  timeoutMs = 15_000,
+  timeoutMs = 40_000,
   endpoint = CPCB_PROXY_PATH,
 } = {}) {
   /** @type {Array<object>|null} */

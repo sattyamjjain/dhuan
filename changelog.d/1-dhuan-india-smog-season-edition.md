@@ -27,6 +27,9 @@
   Ludhiana, Amritsar and Lucknow (`src/dhuan/cities.js`); the Data keys dialog
   lists only the five providers the edition's layers use (`EDITION.keyIds`);
   the scene no longer asks for Google's photoreal tiles, so it plays keyless.
+  The smog mission opens once any story feed answers (a slow CPCB shows at
+  its row instead of holding the welcome shut), the CPCB proxy warms its cache
+  at boot and waits 45 s per page, and the browser source waits 40 s.
   All of it lives in `src/ui/styles/dhuan.css`
   (tokens scoped to `html[data-edition="dhuan"]`) and `src/dhuan/storyStrip.js`;
   upstream sheets are untouched (Sattyam Jain).

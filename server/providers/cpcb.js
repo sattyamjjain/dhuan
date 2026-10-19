@@ -44,7 +44,9 @@ export const CPCB_PAGE_LIMIT = 1000;
 export const CPCB_MAX_PAGES = 60;
 /** A 1,000-row page is a few hundred KB; anything past this is not a page. */
 export const CPCB_MAX_RESPONSE_BYTES = 8 * 1024 * 1024;
-const PAGE_TIMEOUT_MS = 20_000;
+// data.gov.in has answered a 1000-row page in 25–30 s on busy evenings
+// (19 Oct 2026); a shorter deadline turned a slow upstream into no rows.
+const PAGE_TIMEOUT_MS = 45_000;
 
 /** The fields the client needs, under either of data.gov.in's two spellings. */
 const RECORD_FIELDS = Object.freeze([
@@ -118,6 +120,10 @@ export function cpcbProxy({
   fetchImpl = (...args) => fetch(...args),
   cacheDir = path.join(process.cwd(), '.gev-cache'),
   apiKey = () => String(process.env.CPCB_API_KEY || '').trim(),
+  // data.gov.in can take half a minute on a cold walk, longer than a
+  // browser waits. With a key and no fresh cache the server starts that walk
+  // at boot, in the background, so the first visitor reads from memory.
+  warmOnStart = true,
 } = {}) {
   const CACHE_DIR = cacheDir;
   const CACHE_PATH = path.join(CACHE_DIR, 'cpcb.json');
@@ -226,7 +232,42 @@ export function cpcbProxy({
     };
   }
 
+  /** Single-flight refresh; resolves to the fresh entry or null on failure. */
+  function refreshOnce(key) {
+    if (!inflight) {
+      inflight = refreshUpstream(key)
+        .then(async (fresh) => {
+          mem = fresh;
+          await writeDisk(fresh);
+          return fresh;
+        })
+        .catch((err) => {
+          console.warn(
+            `[cpcb-proxy] refresh failed (${err?.message || err}) — serving cache if any`,
+          );
+          return null;
+        })
+        .finally(() => {
+          inflight = null;
+        });
+    }
+    return inflight;
+  }
+
+  async function warmCache() {
+    try {
+      await readDiskOnce();
+      const key = apiKey();
+      if (!key) return;
+      if (mem && Date.now() - mem.at < CPCB_TTL_MS) return;
+      await refreshOnce(key);
+    } catch {
+      /* a warm-up never fails the server; the next request refreshes */
+    }
+  }
+
   const installMiddleware = (server) => {
+    if (warmOnStart) void warmCache();
     server.middlewares.use('/api/cpcb', async (req, res) => {
       const sendJson = (status, obj) => {
         if (res.headersSent) return;
@@ -264,27 +305,10 @@ export function cpcbProxy({
           sendJson(200, buildPayload(entry, false));
           return;
         }
-        // Stale or missing → refresh, single-flight. Capture the promise
-        // locally BEFORE awaiting: the .finally() nulls `inflight` on settle.
-        if (!inflight) {
-          inflight = refreshUpstream(key)
-            .then(async (fresh) => {
-              mem = fresh;
-              await writeDisk(fresh);
-              return fresh;
-            })
-            .catch((err) => {
-              console.warn(
-                `[cpcb-proxy] refresh failed (${err?.message || err}) — serving cache if any`,
-              );
-              return null;
-            })
-            .finally(() => {
-              inflight = null;
-            });
-        }
-        const pending = inflight;
-        const fresh = await pending;
+        // Stale or missing → refresh, single-flight (shared with the boot
+        // warm-up, so a visitor arriving mid-walk joins it instead of
+        // starting a second one).
+        const fresh = await refreshOnce(key);
         if (fresh) {
           sendJson(200, buildPayload(fresh, false));
         } else if (entry) {

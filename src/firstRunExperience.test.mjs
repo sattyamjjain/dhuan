@@ -686,6 +686,23 @@ test('a refused layer fails the mission by name, and a stalled flight never does
   );
 });
 
+test('the smog mission opens when any story feed answers, and names the one that did not', async () => {
+  const slowAir = missionSpy({ layerResult: (id) => id !== 'air-quality' });
+  const outcome = await runFirstRunChoice('smog', slowAir.deps);
+  assert.equal(outcome.ok, true);
+  assert.deepEqual(outcome.failedLayerIds, ['air-quality']);
+  assert.equal(slowAir.calls.globeFlights, 0, 'the camera stays over Punjab');
+
+  const allDown = missionSpy({ layerResult: () => false });
+  const refused = await runFirstRunChoice('smog', allDown.deps);
+  assert.equal(refused.ok, false);
+  assert.deepEqual(refused.failedLayerIds, [
+    'local-firms',
+    'air-quality',
+    'wind',
+  ]);
+});
+
 test('Explore manually touches nothing at all, and an unknown choice is inert', async () => {
   const spy = missionSpy();
   assert.equal((await runFirstRunChoice('explore', spy.deps)).ok, true);
@@ -822,7 +839,11 @@ test('markup, startup ordering and accessibility remain pinned', () => {
     smogTile.indexOf('<small'),
     smogTile.indexOf('</small>'),
   );
-  assert.match(visible, /fires?/i, 'the tile must promise the fires it enables');
+  assert.match(
+    visible,
+    /fires?/i,
+    'the tile must promise the fires it enables',
+  );
   assert.match(visible, /air quality/i);
   assert.match(visible, /wind/i);
   assert.deepEqual(FIRST_RUN_MISSIONS.smog.layerIds, [

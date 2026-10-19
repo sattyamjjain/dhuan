@@ -643,7 +643,6 @@ const PUBLIC_SCENE_RECIPES = [
       bloom: 0,
       sharpen: true,
       detectionMode: 'OFF',
-      mapStack: 'photoreal',
     },
     cameraPath: [
       {

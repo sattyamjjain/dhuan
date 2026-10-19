@@ -69,7 +69,7 @@ test('the guidance names the environment variable and where to set it', () => {
     stats: { keyRequired: true },
   });
   assert.match(text, /FIRMS_MAP_KEY/);
-  assert.match(text, /Provider Settings/);
+  assert.match(text, /Data keys/);
 });
 
 test('guidance appears only for a key that is actually missing and actually named', () => {
@@ -154,6 +154,6 @@ test('a key-gated layer with another source ready says how to use it', () => {
   });
   assert.equal(
     text,
-    'Needs MAPILLARY_CLIENT_TOKEN — add it in Provider Settings, or light STREET VIEW to use your Google Maps key',
+    'Needs MAPILLARY_CLIENT_TOKEN — add it in Data keys, or light STREET VIEW to use your Google Maps key',
   );
 });

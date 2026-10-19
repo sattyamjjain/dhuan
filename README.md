@@ -10,7 +10,7 @@ Built on [God's Eye View](https://github.com/bilawalsidhu/gods-eye-view). The da
 
 ![Dhuan over Delhi: the story strip with 539 active fires over Punjab + Haryana and Delhi NCR's worst station at 269 (Poor), the Layers panel, CPCB stations on the globe and the Air quality card with the six NAQI bands](docs/media/dhuan-home.png)
 
-_Screenshot from 19 Oct 2026, 17:59 IST. The 15-second clip lands on Day 3 of the launch plan. Numbers on screen are dated; the fire count is a floor, not a tally._
+_Screenshot from 19 Oct 2026, 20:16 IST. The 15-second clip lands on Day 3 of the launch plan. Numbers on screen are dated; the fire count is a floor, not a tally._
 
 </div>
 
@@ -36,7 +36,9 @@ the voice agent, the tactical HUD and the scope) is still in the code and one se
 ### The interface
 
 A calm briefing over a living globe, not a spy feed. The chrome is charcoal with one ember
-accent; the data keeps its own colours.
+accent; the data keeps its own colours. The globe always fills the screen: upstream's
+circular scope mask and classification HUD are retired in this edition, not merely off, so a
+share link or a scene cannot bring them back.
 
 - **Story strip** (top left): the Punjab + Haryana fire count for the last 24 h, Delhi NCR's
   worst station with its NAQI band in words, the time the numbers were taken, and the Play
@@ -48,8 +50,13 @@ accent; the data keeps its own colours.
   six-band legend with ranges.
 - **Welcome**: "Smog season live" turns on the three story layers and keeps the camera over
   Punjab; "Explore the map" starts clean.
+- **Search a place** (bottom): one search field, with quick pills for Delhi, Chandigarh,
+  Ludhiana, Amritsar and Lucknow and their landmarks.
 - **Keys**: the bottom-right chip counts the data keys still to add and opens the setup
-  dialog. Language picker beside it.
+  dialog, which lists only the five providers this edition's layers use (Google Maps,
+  Cesium ion, NASA FIRMS, CPCB via data.gov.in, OpenSky). Language picker beside it.
+- **Play** works without any key: the scene keeps whatever map is on screen instead of
+  asking for Google's photoreal tiles.
 
 Everything is keyboard-reachable, every control has a visible focus ring, no state is colour
 only, and `prefers-reduced-motion` turns the remaining animation off. The theme lives in one
@@ -73,9 +80,9 @@ npm ci && npm run doctor && npm run dev
 
 Open http://localhost:4173. Then, in the app, open **Data keys** (bottom-right) and paste:
 
-| Key             | Unlocks                                     | Get it                                                                      |
-| --------------- | ------------------------------------------- | --------------------------------------------------------------------------- |
-| `FIRMS_MAP_KEY` | NASA FIRMS active fires (the Punjab count)  | https://firms.modaps.eosdis.nasa.gov/api/map_key/ (free, instant)           |
+| Key             | Unlocks                                     | Get it                                                                                             |
+| --------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `FIRMS_MAP_KEY` | NASA FIRMS active fires (the Punjab count)  | https://firms.modaps.eosdis.nasa.gov/api/map_key/ (free, instant)                                  |
 | `CPCB_API_KEY`  | CPCB stations across India (the Delhi dots) | https://www.data.gov.in/ → register → open any API resource → **Generate API Key** (free, instant) |
 
 Both keys stay on the server (`/api/firms`, `/api/cpcb`); the browser never sees them. Do not
@@ -91,12 +98,12 @@ project from before this fork, import `scenes/smog-season-live.json` from the Sc
 
 ## What it shows, and what it does not
 
-| Layer                 | Source                                           | Refresh                         | Licence             | Caveat                                                                                                                                         |
-| --------------------- | ------------------------------------------------ | ------------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| FIRMS Active Fires    | NASA FIRMS, VIIRS + MODIS NRT, trailing 24 h     | 10 min poll, 30 min proxy cache | CC0 / US public     | Polar passes before 1:30 PM IST miss most after-3 PM burns, so every count is a floor. A detection is a hot pixel, not a verified field fire. |
-| Wind                  | NOAA GFS 0.25°, latest 6-hourly cycle            | hourly                          | US public domain    | A forecast, not an observation. It does not follow history.                                                                                    |
-| Air quality (`cpcb`)  | CPCB CAAQMS via data.gov.in, hourly              | 20 min poll, 20 min proxy cache | GODL (India)        | A station's AQI is the worst sub-index of at least three pollutants, one of them PM. Readings older than 3 h read STALE; older than 6 h drop.  |
-| Air quality (`eccc`)  | Environment and Climate Change Canada, AQHI      | 20 min                          | ECCC open data      | Upstream's provider, Canada only. Set `VITE_AIR_QUALITY_PROVIDER=eccc` to use it.                                                              |
+| Layer                | Source                                       | Refresh                         | Licence          | Caveat                                                                                                                                        |
+| -------------------- | -------------------------------------------- | ------------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| FIRMS Active Fires   | NASA FIRMS, VIIRS + MODIS NRT, trailing 24 h | 10 min poll, 30 min proxy cache | CC0 / US public  | Polar passes before 1:30 PM IST miss most after-3 PM burns, so every count is a floor. A detection is a hot pixel, not a verified field fire. |
+| Wind                 | NOAA GFS 0.25°, latest 6-hourly cycle        | hourly                          | US public domain | A forecast, not an observation. It does not follow history.                                                                                   |
+| Air quality (`cpcb`) | CPCB CAAQMS via data.gov.in, hourly          | 20 min poll, 20 min proxy cache | GODL (India)     | A station's AQI is the worst sub-index of at least three pollutants, one of them PM. Readings older than 3 h read STALE; older than 6 h drop. |
+| Air quality (`eccc`) | Environment and Climate Change Canada, AQHI  | 20 min                          | ECCC open data   | Upstream's provider, Canada only. Set `VITE_AIR_QUALITY_PROVIDER=eccc` to use it.                                                             |
 
 The Punjab + Haryana count is a **bounding box** (73.8–77.6 °E, 27.6–32.6 °N), not a state
 boundary: it clips slivers of Rajasthan, Himachal, Uttar Pradesh and Delhi. The label says so.

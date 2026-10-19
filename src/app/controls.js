@@ -2,6 +2,8 @@ import { catalogControlServices } from './catalog.js';
 import { StyleManager } from '../ui/composition.js';
 import { flyToHome } from '../camera.js';
 import { EDITION } from '../edition.js';
+import { DHUAN_CITIES } from '../dhuan/cities.js';
+import { flyToPOI, flyToPresetLocation } from '../locations.js';
 import { initCockpitCloudEffects } from '../cockpitCloudEffects.js';
 import { t } from '../i18n/index.js';
 
@@ -26,6 +28,14 @@ export function createApplicationControls({
       ...catalogControlServices(catalog),
       // First-load visual baseline the edition sets (see EDITION.ui).
       editionVisualDefaults: { hudVisible: EDITION.ui.tacticalHud !== false },
+      editionUi: EDITION.ui,
+      // The location tray lists the edition's cities; the fly-to helpers read
+      // the same table so a pill and its landmarks agree.
+      CITY_POIS: DHUAN_CITIES,
+      flyToPresetLocation: (target, id, options = {}) =>
+        flyToPresetLocation(target, id, { ...options, presets: DHUAN_CITIES }),
+      flyToPOI: (target, id, index, options = {}) =>
+        flyToPOI(target, id, index, { ...options, presets: DHUAN_CITIES }),
     },
     requestServices: operations.requests,
     mapStackController,

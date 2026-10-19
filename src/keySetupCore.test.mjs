@@ -19,7 +19,7 @@ import {
 test('provider requirements name the registry env vars and next step', () => {
   assert.equal(
     keySetupRequirement('cesium-ion'),
-    'Needs CESIUM_ION_TOKEN — add it in Provider Settings',
+    'Needs CESIUM_ION_TOKEN — add it in Data keys',
   );
   assert.equal(keySetupRequirement('unknown'), '');
 });
@@ -385,7 +385,7 @@ test('key guidance can offer another source that works with a key already set', 
   const streetView = { label: 'STREET VIEW', requiresKeyId: 'google-maps' };
   assert.equal(
     keySetupWithAlternatives(keySetupRequirement('mapillary'), [streetView]),
-    'Needs MAPILLARY_CLIENT_TOKEN — add it in Provider Settings, or light STREET VIEW to use your Google Maps key',
+    'Needs MAPILLARY_CLIENT_TOKEN — add it in Data keys, or light STREET VIEW to use your Google Maps key',
   );
   assert.equal(
     keySetupWithAlternatives('', [streetView]),

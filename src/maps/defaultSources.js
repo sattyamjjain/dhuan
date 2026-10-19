@@ -35,7 +35,7 @@ export function createDefaultMapSources({
         descriptor,
         available: !descriptor.requiresIon || hasIon,
         unavailableReason: descriptor.requiresIon
-          ? t('Needs {envVars} — add it in Provider Settings', {
+          ? t('Needs {envVars} — add it in Data keys', {
               envVars: keySetupRequirementEnvVars('cesium-ion'),
             })
           : null,

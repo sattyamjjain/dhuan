@@ -27,7 +27,7 @@ html[data-edition='dhuan'] {
   --btn-radius: 9px;
   --left-stack-x: 24px;
   --right-rail-x: 24px;
-  --left-stack-top: 262px;
+  --left-stack-top: 300px;
   --left-collapsed-width: 200px;
   --display-panel-expanded-width: 284px;
   --panel-surface-shadow: var(--dh-shadow);
@@ -69,13 +69,21 @@ html[data-edition='dhuan'] #cctv-panel,
 html[data-edition='dhuan'] #street-level-panel,
 html[data-edition='dhuan'] #hud-toggle,
 html[data-edition='dhuan'] #hud-layout-row,
+html[data-edition='dhuan'] #intel-hud,
+html[data-edition='dhuan'] #pp-toggles .pp-toggle-group:has(> #scope-toggle),
 html[data-edition='dhuan'] .cyber-sonar-control {
   display: none !important;
 }
 
+/* Scene playback borrows the recording chrome; the rule-of-thirds guide is
+   for cutting a clip, not for watching one. */
+html[data-edition='dhuan'] body.scene-playback-mode #safe-frame-overlay {
+  display: none;
+}
+
 /* ── Brand ─────────────────────────────────────────────────────── */
 html[data-edition='dhuan'] #title-bar {
-  top: 22px;
+  top: 16px;
   left: 24px;
 }
 
@@ -101,7 +109,7 @@ html[data-edition='dhuan'] .wordmark {
 
 html[data-edition='dhuan'] .wordmark-hi {
   font-family: var(--font-devanagari);
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 700;
   line-height: 1;
   color: var(--text-primary);
@@ -118,9 +126,9 @@ html[data-edition='dhuan'] .loader-content .title-accent {
 }
 
 html[data-edition='dhuan'] #title-bar .subtitle {
-  margin-top: 7px;
+  margin-top: 5px;
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 500;
   letter-spacing: 0;
   text-transform: none;
@@ -130,13 +138,14 @@ html[data-edition='dhuan'] #title-bar .subtitle {
 /* ── Story strip ───────────────────────────────────────────────── */
 html[data-edition='dhuan'] #dhuan-story {
   position: fixed;
-  top: 96px;
+  top: 84px;
   left: 24px;
   z-index: 100;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  width: min(380px, calc(100vw - 48px));
+  gap: 6px;
+  /* Same column as the Layers panel under it, so the left edge reads as one rail. */
+  width: min(332px, calc(100vw - 48px));
 }
 
 html[data-edition='dhuan'] #dhuan-story[hidden] {
@@ -155,8 +164,8 @@ html[data-edition='dhuan'] .story-stats {
 html[data-edition='dhuan'] .story-stat {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
+  gap: 10px;
+  padding: 8px 12px;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: 12px;
@@ -173,12 +182,12 @@ html[data-edition='dhuan'] .story-icon {
   display: grid;
   flex: none;
   place-items: center;
-  width: 34px;
-  height: 34px;
-  font-size: 20px;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
   color: var(--accent);
   background: var(--accent-dim);
-  border-radius: 10px;
+  border-radius: 9px;
 }
 
 html[data-edition='dhuan'] .story-stat-air .story-icon {
@@ -208,7 +217,7 @@ html[data-edition='dhuan'] .story-value {
   display: flex;
   align-items: baseline;
   gap: 8px;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.01em;
@@ -223,7 +232,7 @@ html[data-edition='dhuan'] .story-stat[data-state='empty'] .story-value {
 }
 
 html[data-edition='dhuan'] .story-label {
-  font-size: 12.5px;
+  font-size: 12px;
   line-height: 1.35;
   color: var(--text-secondary);
 }
@@ -241,7 +250,8 @@ html[data-edition='dhuan'] .story-badge {
 }
 
 html[data-edition='dhuan'] .story-enable {
-  padding: 0;
+  min-height: 24px;
+  padding: 2px 0;
   font: inherit;
   font-weight: 600;
   color: var(--accent);
@@ -259,8 +269,8 @@ html[data-edition='dhuan'] .story-enable:hover {
 html[data-edition='dhuan'] .story-meta {
   align-self: flex-start;
   margin: 0;
-  padding: 5px 10px;
-  font-size: 11.5px;
+  padding: 4px 10px;
+  font-size: 11px;
   line-height: 1.4;
   color: var(--text-secondary);
   background: var(--glass-bg);
@@ -274,10 +284,10 @@ html[data-edition='dhuan'] .story-play {
   display: inline-flex;
   align-items: center;
   align-self: flex-start;
-  gap: 8px;
-  min-height: 40px;
-  padding: 0 18px 0 12px;
-  font: 600 13.5px/1 var(--font-sans);
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 16px 0 10px;
+  font: 600 13px/1 var(--font-sans);
   color: var(--dh-ember-ink);
   background: var(--accent);
   border: 1px solid transparent;
@@ -324,17 +334,40 @@ html[data-edition='dhuan'] .locale-picker-button:focus-visible {
 html[data-edition='dhuan'] .story-play .story-icon {
   width: auto;
   height: auto;
-  font-size: 22px;
+  font-size: 20px;
   color: inherit;
   background: none;
 }
 
 html[data-edition='dhuan'] .story-play[hidden],
-html[data-edition='dhuan'] body.scene-playback-mode #dhuan-story,
-html[data-edition='dhuan'] body.recording-mode #dhuan-story,
 html[data-edition='dhuan'] body.cockpit-mode #dhuan-story,
 html[data-edition='dhuan'] body.ui-clean-view #dhuan-story {
   display: none;
+}
+
+/* While the scene plays the numbers step aside, but the button that stops
+   it stays where the hand (and the keyboard focus) left it. */
+html[data-edition='dhuan']
+  body.scene-playback-mode
+  #dhuan-story
+  > :not(.story-play),
+html[data-edition='dhuan']
+  body.recording-mode
+  #dhuan-story
+  > :not(.story-play) {
+  display: none;
+}
+
+html[data-edition='dhuan'] .story-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ── Map tools (top right) ─────────────────────────────────────── */
@@ -411,7 +444,15 @@ html[data-edition='dhuan'] .cctv-summary-label {
   color: var(--text-secondary);
 }
 
-html[data-edition='dhuan'] .panel-divider {
+html[data-edition='dhuan'] .panel-divider,
+html[data-edition='dhuan']
+  #left-panel-stack
+  > [data-panel-id]:not(.collapsed)
+  .panel-divider,
+html[data-edition='dhuan']
+  #right-context-rail
+  [data-panel-id]:not(.collapsed)
+  .panel-divider {
   background: var(--glass-border);
 }
 
@@ -476,7 +517,9 @@ html[data-edition='dhuan'] .data-icon {
   border-radius: 8px;
 }
 
-html[data-edition='dhuan'] .data-toggle-row:has(.data-toggle-btn.active) .data-icon {
+html[data-edition='dhuan']
+  .data-toggle-row:has(.data-toggle-btn.active)
+  .data-icon {
   color: var(--accent);
   background: var(--accent-dim);
 }
@@ -728,8 +771,30 @@ html[data-edition='dhuan'] .pp-slider-value {
   letter-spacing: 0.02em;
 }
 
+/* The DISPLAY panel scrolls inside its allocated height instead of
+   running off a short screen (upstream lays its body out as contents). */
+html[data-edition='dhuan'] #pp-toggles > .pp-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+html[data-edition='dhuan'] #pp-toggles > .pp-panel-body > * {
+  flex-shrink: 0;
+}
+
+html[data-edition='dhuan'] #pp-toggles.collapsed > .pp-panel-body {
+  display: none;
+}
+
 /* ── Dock: one search pill ─────────────────────────────────────── */
 html[data-edition='dhuan'] #command-dock {
+  --dock-location-open: min(92vw, 400px);
   grid-template-areas: 'locations';
   grid-template-columns: minmax(260px, 1fr);
   width: min(92vw, 400px);
@@ -746,8 +811,44 @@ html[data-edition='dhuan'] #command-dock > #location-bar,
 html[data-edition='dhuan'] #command-dock > #location-bar:not(.collapsed) {
   flex-basis: auto;
   width: 100%;
-  border-right: 0;
-  border-left: 0;
+  background: transparent;
+  border: 0;
+  border-radius: inherit;
+  box-shadow: none;
+  /* The dock already blurs its backdrop; a second blur inside it drew a
+     darker inner box with a lighter 5px rim. */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html[data-edition='dhuan'] #command-dock > #location-bar > .location-inner,
+html[data-edition='dhuan']
+  #command-dock
+  #location-bar.collapsed
+  .location-inner {
+  min-height: 44px;
+  padding: 6px 14px;
+  background: transparent;
+  border: 0;
+  border-radius: inherit;
+  box-shadow: none;
+}
+
+html[data-edition='dhuan'] #command-dock .dock-pin-btn {
+  color: var(--text-secondary);
+  background: var(--dh-surface-3);
+  border: 1px solid var(--glass-border-hover);
+  box-shadow: var(--dh-shadow);
+}
+
+html[data-edition='dhuan'] #command-dock .dock-pin-btn[aria-pressed='true'] {
+  color: var(--accent);
+  background: var(--accent-dim);
+  border-color: rgba(255, 138, 60, 0.45);
+}
+
+html[data-edition='dhuan'] #command-dock .search-toggle-btn {
+  border-radius: 10px;
 }
 
 html[data-edition='dhuan'] #command-dock .location-toolbar {
@@ -756,6 +857,10 @@ html[data-edition='dhuan'] #command-dock .location-toolbar {
 
 html[data-edition='dhuan'] #command-dock .location-toolbar-label,
 html[data-edition='dhuan'] #command-dock .panel-title {
+  /* Upstream clips this label to an icon's width on small screens; the
+     edition's dock is one wide pill, so the words always fit. */
+  max-width: none;
+  overflow: visible;
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 600;
@@ -798,12 +903,37 @@ html[data-edition='dhuan'] #command-dock #location-search {
 }
 
 html[data-edition='dhuan'] #command-dock .location-pill {
+  padding: 6px 12px;
   font-family: var(--font-sans);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0;
   text-transform: none;
   border-radius: 999px;
+}
+
+/* The tray is as wide as the dock: the search field takes the first line,
+   the city pills wrap under it instead of running off the edge. */
+html[data-edition='dhuan'] #command-dock #location-bar .dock-popover-content {
+  left: -5px;
+}
+
+html[data-edition='dhuan'] #command-dock .location-city-row {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+html[data-edition='dhuan'] #command-dock .location-search-wrap {
+  display: flex;
+  flex: 1 1 100%;
+  order: -1;
+  gap: 6px;
+}
+
+html[data-edition='dhuan'] #command-dock .location-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 /* ── Corner actions ────────────────────────────────────────────── */
@@ -927,7 +1057,10 @@ html[data-edition='dhuan'] .first-run-choices button:first-child:hover {
   background: rgba(255, 138, 60, 0.24);
 }
 
-html[data-edition='dhuan'] .first-run-choices button > .material-symbols-outlined:first-child {
+html[data-edition='dhuan']
+  .first-run-choices
+  button
+  > .material-symbols-outlined:first-child {
   display: grid;
   place-items: center;
   width: 40px;
@@ -1181,7 +1314,12 @@ html[data-edition='dhuan'] #global-loading-label {
   /* The strip owns the top of the phone; the left stack starts under it.
      The dock and the right rail keep upstream's modelled geometry. */
   html[data-edition='dhuan'] #left-panel-stack {
-    top: 232px;
+    top: 188px;
+  }
+
+  /* The Director's authoring panel is desktop work; Play covers the phone. */
+  html[data-edition='dhuan'] #scene-panel {
+    display: none;
   }
 
   html[data-edition='dhuan'] #left-panel-stack > .panel-collapsible,

@@ -1,6 +1,6 @@
 import { createStandaloneCatalog } from './catalog.js';
 import { createStandalonePlaceSearch } from './placeSearch.js';
-import { CITY_POIS } from '../cityPois.js';
+import { DHUAN_CITIES } from '../dhuan/cities.js';
 import { createApplication } from '../app/application.js';
 import { createStandaloneScene } from './scene.js';
 import { createStandaloneControls } from './controls.js';
@@ -44,7 +44,7 @@ export function createStandaloneApplication({
         // The bundled city and landmark data the offline name provider reads.
         // The search package takes it as plain data rather than importing it,
         // so it stays free of application state.
-        presets: CITY_POIS,
+        presets: DHUAN_CITIES,
         ...geospatial,
         resolveApiKey: () => googleApiKey,
         signal: context.signal,

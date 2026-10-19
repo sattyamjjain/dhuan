@@ -211,18 +211,20 @@ export function flyToLandmark(viewer, lat, lon, options = {}) {
  * Returns target position for orbit controller.
  */
 export function flyToPresetLocation(viewer, locationId, options = {}) {
-  const city = CITY_POIS[locationId];
+  // An edition can hand in its own destination table; upstream's is the default.
+  const { presets = CITY_POIS, ...flyOptions } = options;
+  const city = presets[locationId];
   if (!city) return null;
   if (
-    options.viewMode === 'overview' &&
-    !finitePositive(options.range) &&
+    flyOptions.viewMode === 'overview' &&
+    !finitePositive(flyOptions.range) &&
     city.viewBounds
   ) {
     return flyToViewportBounds(viewer, city.viewBounds, {
-      duration: options.duration,
-      onStart: options.onStart,
-      onComplete: options.onComplete,
-      onCancel: options.onCancel,
+      duration: flyOptions.duration,
+      onStart: flyOptions.onStart,
+      onComplete: flyOptions.onComplete,
+      onCancel: flyOptions.onCancel,
       navigationMode: 'city-overview',
     });
   }
@@ -234,7 +236,7 @@ export function flyToPresetLocation(viewer, locationId, options = {}) {
     buildingHeight: poi.buildingHeight || 30,
     buildingBounds: poi.buildingBounds || null,
     groundElevation: city.groundElevation || 0,
-    ...options,
+    ...flyOptions,
   });
 }
 
@@ -243,7 +245,8 @@ export function flyToPresetLocation(viewer, locationId, options = {}) {
  * Returns target position for orbit controller.
  */
 export function flyToPOI(viewer, cityId, poiIndex, options = {}) {
-  const city = CITY_POIS[cityId];
+  const { presets = CITY_POIS, ...flyOptions } = options;
+  const city = presets[cityId];
   if (!city || !city.pois[poiIndex]) return null;
   const poi = city.pois[poiIndex];
   return flyToLandmark(viewer, poi.lat, poi.lon, {
@@ -253,7 +256,7 @@ export function flyToPOI(viewer, cityId, poiIndex, options = {}) {
     buildingHeight: poi.buildingHeight || 30,
     buildingBounds: poi.buildingBounds || null,
     groundElevation: city.groundElevation || 0,
-    ...options,
+    ...flyOptions,
   });
 }
 

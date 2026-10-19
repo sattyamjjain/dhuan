@@ -8,12 +8,10 @@ import {
 } from '../keySetupCore.mjs';
 import { t, translateKnown } from '../i18n/index.js';
 
-/** "Needs X — add it in Provider Settings", or '' for an unknown or hidden key. */
+/** "Needs X — add it in Data keys", or '' for an unknown or hidden key. */
 export function keyRequirementText(id) {
   const envVars = id ? keySetupRequirementEnvVars(id) : null;
-  return envVars
-    ? t('Needs {envVars} — add it in Provider Settings', { envVars })
-    : '';
+  return envVars ? t('Needs {envVars} — add it in Data keys', { envVars }) : '';
 }
 
 /** The key's product name in title case: GOOGLE MAPS → Google Maps. */

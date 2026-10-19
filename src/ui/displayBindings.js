@@ -60,11 +60,17 @@ export class DisplayBindings {
       viewer: this.viewer,
       documentRef: document,
     });
+    // Single-key shortcuts whose controls the edition hides stay off (2.1.4).
+    const shortcutPolicy = this.services.editionUi?.keyboardShortcuts || {};
+    const shortcutEnabled = (name) => shortcutPolicy[name] !== false;
     this._applicationShortcuts = bindApplicationShortcuts({
       documentRef: document,
       searchInput: this._locationSearch,
       actions: {
-        setStyle: (style) => this.setStyle(style, { userInitiated: true }),
+        setStyle: (style) => {
+          if (!shortcutEnabled('styles')) return;
+          this.setStyle(style, { userInitiated: true });
+        },
         dismissSearch: () => {
           if (this._locationSearch.classList.contains('expanded')) {
             this._locationSearch.classList.remove('expanded');
@@ -73,6 +79,7 @@ export class DisplayBindings {
           }
         },
         toggleHud: () => {
+          if (!shortcutEnabled('hud')) return;
           this.shareLinkManager?.claimRestoreLane?.('visual');
           this.hud.toggle();
           this._updateHudButtonState();
@@ -88,7 +95,10 @@ export class DisplayBindings {
           cycleDetectionMode();
           this._syncShareState();
         },
-        toggleCctv: () => this._toggleCctvEnabled(),
+        toggleCctv: () => {
+          if (!shortcutEnabled('cctv')) return;
+          this._toggleCctvEnabled();
+        },
       },
     });
 

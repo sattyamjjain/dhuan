@@ -1836,6 +1836,7 @@
       "src/data/vesselLabels.js",
       "src/firstRunExperience.js",
       "src/dhuan/storyStrip.js",
+      "src/dhuan/cities.js",
       "src/hud.js",
       "src/hudFireCounter.js",
       "src/edition.js",

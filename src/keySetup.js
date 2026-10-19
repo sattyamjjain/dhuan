@@ -368,7 +368,21 @@ export async function initKeySetup({
   documentRef = globalThis.document,
   fetchImpl,
   signal,
+  keyIds = null,
 } = {}) {
+  // An edition lists only the providers its layers can use; the chip count
+  // and the dialog follow that list, the server still knows every key.
+  const narrow = (raw) => {
+    if (!Array.isArray(keyIds) || !Array.isArray(raw?.keys)) return raw;
+    const allowed = new Set(keyIds);
+    const keys = raw.keys.filter((key) => allowed.has(key.id));
+    return {
+      ...raw,
+      keys,
+      setCount: keys.filter((key) => key.set).length,
+      total: keys.length,
+    };
+  };
   const chip = documentRef?.getElementById?.('key-setup-chip');
   const root = documentRef?.getElementById?.('key-setup');
   if (!chip || !root || root.dataset.initialized === 'true') return null;
@@ -411,7 +425,7 @@ export async function initKeySetup({
       signal: lifetime.signal,
     });
     if (!response.ok) throw new Error(String(response.status));
-    status = await response.json();
+    status = narrow(await response.json());
     if (disposed) return null;
   } catch {
     // Prod build or non-loopback visitor: the surface cannot function, so it
@@ -436,8 +450,9 @@ export async function initKeySetup({
       updateCloudVoiceAuthControl(auth, oauthBusy);
   };
 
-  const render = (nextStatus) => {
+  const render = (rawStatus) => {
     if (disposed) return;
+    const nextStatus = narrow(rawStatus);
     status = nextStatus;
     chipLabel.textContent = keySetupChipLabel(status);
     chip.title = t('Project keys: {status}', {

@@ -50,6 +50,8 @@ export class LocationControls {
       pill.type = 'button';
       pill.className = 'location-pill';
       pill.dataset.locationId = id;
+      // ARIA reflection, so the test fixtures' plain objects accept it too.
+      pill.ariaPressed = 'false';
       pill.textContent = localizePlaceName(city.name);
       this.bind(pill, 'click', () => onCity(id));
       elements.pills.appendChild(pill);
@@ -138,8 +140,11 @@ export class LocationControls {
   }
   highlightCity(id) {
     if (this.destroyed) return;
-    for (const pill of this.elements.pills.querySelectorAll('.location-pill'))
-      pill.classList.toggle('active', pill.dataset.locationId === id);
+    for (const pill of this.elements.pills.querySelectorAll('.location-pill')) {
+      const open = pill.dataset.locationId === id;
+      pill.classList.toggle('active', open);
+      pill.ariaPressed = String(open);
+    }
   }
   renderStatus(record) {
     if (this.destroyed || !this.elements.statusCity || !this.elements.statusPoi)

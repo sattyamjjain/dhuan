@@ -12,16 +12,21 @@
   military flights, military awareness, military installations, CCTV and ALPR —
   which stay registered for the token ledger but are hidden from the panel,
   skipped by voice and refused by the layer manager (Sattyam Jain).
-- Dhuan's own chrome. The edition drops the classification HUD, the circular
-  scope mask, the sensor presets and the voice dock (all still reachable from
-  DISPLAY and share links), and replaces them with a calm briefing: a Devanagari
+- Dhuan's own chrome. The edition retires the classification HUD and the
+  circular scope mask outright (`IntelHUD` `available: false`,
+  `setScopeMaskAvailable(false)`: share links, presets and scene playback
+  cannot bring them back, and their DISPLAY groups are hidden), hides the sensor
+  presets and the voice dock, and replaces them with a calm briefing: a Devanagari
   wordmark, a story strip under it with the live Punjab + Haryana fire count,
   Delhi NCR's worst station with its NAQI band in words, the time the numbers
   were taken, and one button that plays "Smog Season Live" once. The Layers
   panel opens by default, grouped story-first (`EDITION.panelGroups`) with one
   Material glyph per row (`EDITION.layerGlyphs`); the welcome dialog offers
   "Smog season live" (fires, air quality, wind, camera stays over Punjab) or a
-  clean globe; the dock is a single place search; the key chip reads
-  "N data keys to add". All of it lives in `src/ui/styles/dhuan.css`
+  clean globe; the dock is a single place search whose quick places are Delhi, Chandigarh,
+  Ludhiana, Amritsar and Lucknow (`src/dhuan/cities.js`); the Data keys dialog
+  lists only the five providers the edition's layers use (`EDITION.keyIds`);
+  the scene no longer asks for Google's photoreal tiles, so it plays keyless.
+  All of it lives in `src/ui/styles/dhuan.css`
   (tokens scoped to `html[data-edition="dhuan"]`) and `src/dhuan/storyStrip.js`;
   upstream sheets are untouched (Sattyam Jain).

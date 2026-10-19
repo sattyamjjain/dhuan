@@ -136,8 +136,9 @@ export class VisualSettings {
     }
     if (typeof scopeEnabled === 'boolean') {
       setScopeMaskEnabled(scopeEnabled);
-      this._scopeBtn?.classList.toggle('active', scopeEnabled);
-      this._scopeBtn?.setAttribute('aria-pressed', String(scopeEnabled));
+      const scopeOn = this.services.isScopeMaskEnabled?.() ?? scopeEnabled;
+      this._scopeBtn?.classList.toggle('active', scopeOn);
+      this._scopeBtn?.setAttribute('aria-pressed', String(scopeOn));
     }
     if (typeof scopeFeatherPct === 'number' && this._scopeFeatherSlider) {
       const pct = Math.max(0, Math.min(100, Math.round(scopeFeatherPct)));
@@ -485,6 +486,7 @@ export class VisualSettings {
     this._visualEffects.setBloomEnabled(enabled);
     this._syncBloomStageEnabled();
     this._bloomBtn.classList.toggle('active', this.bloomEnabled);
+    this._bloomBtn.setAttribute('aria-pressed', String(this.bloomEnabled));
     this._bloomSliderRow.classList.toggle('visible', this.bloomEnabled);
     if (this.bloomEnabled) {
       this._applyBloomIntensity(this._getBloomIntensity());
@@ -502,6 +504,7 @@ export class VisualSettings {
     governorRequestRender('sharpen');
     this._visualEffects.setSharpenEnabled(enabled);
     this._sharpenBtn.classList.toggle('active', this.sharpenEnabled);
+    this._sharpenBtn.setAttribute('aria-pressed', String(this.sharpenEnabled));
     if (this._sharpenSliderRow) {
       this._sharpenSliderRow.classList.toggle('visible', this.sharpenEnabled);
     }
@@ -1318,8 +1321,10 @@ export class VisualSettings {
     const scopeState = state.scope || {};
     if (typeof scopeState.enabled === 'boolean') {
       setScopeMaskEnabled(scopeState.enabled);
-      this._scopeBtn?.classList.toggle('active', scopeState.enabled);
-      this._scopeBtn?.setAttribute('aria-pressed', String(scopeState.enabled));
+      const scopeOn =
+        this.services.isScopeMaskEnabled?.() ?? scopeState.enabled;
+      this._scopeBtn?.classList.toggle('active', scopeOn);
+      this._scopeBtn?.setAttribute('aria-pressed', String(scopeOn));
     }
     if (typeof scopeState.featherPct === 'number' && this._scopeFeatherSlider) {
       const pct = Math.max(0, Math.min(100, Math.round(scopeState.featherPct)));

@@ -102,6 +102,8 @@ let _canvas = null;
 let _container = null;
 let _viewer = null;
 let _enabled = true;
+/** False once an edition retires the mask; enable requests are then ignored. */
+let _available = true;
 let _featherRatio = SCOPE_FEATHER_RATIO_DEFAULT;
 let _resizeObserver = null;
 let _dprQuery = null;
@@ -502,7 +504,7 @@ function teardownCameraHeightWatch() {
  * @returns {void}
  */
 export function setScopeMaskEnabled(enabled) {
-  const next = Boolean(enabled);
+  const next = _available && Boolean(enabled);
   const reEnabled = next && !_enabled;
   _enabled = next;
   if (reEnabled) {
@@ -519,6 +521,26 @@ export function setScopeMaskEnabled(enabled) {
 /** @returns {boolean} */
 export function isScopeMaskEnabled() {
   return _enabled;
+}
+
+/**
+ * Retire (or restore) the mask for the whole session. Unavailable means the
+ * globe always fills the viewport: share links, presets and scene playback
+ * cannot switch the keyhole back on.
+ * @param {boolean} available
+ * @returns {void}
+ */
+export function setScopeMaskAvailable(available) {
+  _available = Boolean(available);
+  if (!_available && _enabled) {
+    _enabled = false;
+    draw();
+  }
+}
+
+/** @returns {boolean} */
+export function isScopeMaskAvailable() {
+  return _available;
 }
 
 /**
@@ -562,6 +584,7 @@ export function _resetScopeMaskForTest() {
   _container = null;
   _viewer = null;
   _enabled = true;
+  _available = true;
   _featherRatio = SCOPE_FEATHER_RATIO_DEFAULT;
   _terminusAlpha = SCOPE_OUTSIDE_ALPHA;
   _terminusOverride = null;

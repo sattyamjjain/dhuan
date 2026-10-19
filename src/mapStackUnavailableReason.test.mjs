@@ -8,7 +8,7 @@ import {
 test('missing photoreal credentials explain both supported setup routes', () => {
   assert.match(
     photorealUnavailableReason(false),
-    /Needs GOOGLE_MAPS_API_KEY.*Provider Settings/,
+    /Needs GOOGLE_MAPS_API_KEY.*Data keys/,
   );
   assert.match(photorealUnavailableReason(false), /Cesium ion token/);
 });

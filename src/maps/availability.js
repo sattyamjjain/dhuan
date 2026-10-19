@@ -19,7 +19,7 @@ export function photorealUnavailableReason(hasCredentials) {
     );
   const envVars = keySetupRequirementEnvVars('google-maps');
   return t(
-    'Needs {envVars} — add it in Provider Settings — or a Cesium ion token for the ion-hosted route',
+    'Needs {envVars} — add it in Data keys — or a Cesium ion token for the ion-hosted route',
     { envVars },
   );
 }

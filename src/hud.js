@@ -180,9 +180,13 @@ export class IntelHUD {
       summaryPolicy = {},
       basemapContext = {},
       summaryService = applicationServices.summary,
+      available = true,
     } = {},
   ) {
     this.summaryService = summaryService;
+    // An edition can retire the tactical overlay outright: share links, scene
+    // playback and the H shortcut then all leave it hidden.
+    this._available = available !== false;
     this.summaryPolicy = summaryPolicy;
     this.basemapContext = basemapContext;
     this.placeSearch = placeSearch;
@@ -262,6 +266,10 @@ export class IntelHUD {
   _buildDOM() {
     this._el = document.getElementById('intel-hud');
     if (!this._el) return;
+    if (!this._available) {
+      this._el.hidden = true;
+      return;
+    }
 
     // i18n-ignore: sensor codes and a classification banner; the rest uses t()
     this._el.innerHTML = `
@@ -335,6 +343,7 @@ export class IntelHUD {
    * cadences and are cleaned up in {@link destroy}.
    */
   _startTimers() {
+    if (!this._available) return;
     // Timestamp — every second
     this._timestampInterval = setInterval(() => {
       const el = document.getElementById('hud-timestamp');
@@ -969,6 +978,7 @@ export class IntelHUD {
 
   /** Make the HUD visible and immediately refresh all readouts. */
   show() {
+    if (!this._available) return;
     this._visible = true;
     if (this._el) this._el.classList.add('active');
     this._updateCameraData(); // immediate update
@@ -1021,6 +1031,9 @@ export class IntelHUD {
     if (this._el) {
       this._el.dataset.variant = this._variant;
     }
+    // The Cyber variant restyles the whole shell; a retired HUD keeps its
+    // variant for share state but never dresses the page in it.
+    if (!this._available) return;
     applyHudUiTheme(document.documentElement, this._variant);
   }
 
@@ -1036,6 +1049,7 @@ export class IntelHUD {
    *   show/hide is active, otherwise the explicit visibility override.
    */
   getMode() {
+    if (!this._available) return 'off';
     if (this._autoMode) return 'auto';
     return this._visible ? 'on' : 'off';
   }

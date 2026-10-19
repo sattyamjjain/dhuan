@@ -360,6 +360,7 @@ export class StyleManager extends ShellFacade {
     this.hud = new IntelHUD(viewer, {
       placeSearch,
       summaryService: requestServices?.summary,
+      available: services.editionUi?.tacticalHud !== false,
     });
     this._recording.hud = this.hud;
     this._cockpitCoordinator = new CockpitCoordinator({
@@ -1261,6 +1262,7 @@ export class StyleManager extends ShellFacade {
     document.body.classList.toggle('ui-clean-view', shouldEnable);
     if (this._cleanViewBtn) {
       this._cleanViewBtn.classList.toggle('active', shouldEnable);
+      this._cleanViewBtn.setAttribute('aria-pressed', String(shouldEnable));
     }
     this._scheduleLeftPanelLayout();
   }

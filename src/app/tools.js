@@ -9,7 +9,7 @@ import { installViews, isEmbeddedInline } from './embed.js';
 import {
   installScopeMask,
   destroyScopeMask,
-  setScopeMaskEnabled,
+  setScopeMaskAvailable,
 } from '../scopeMask.js';
 import { EDITION } from '../edition.js';
 import {
@@ -129,8 +129,9 @@ export function createApplicationTools({
   defer(() => destroyScopeMask());
   // The edition opens without the circular scope unless a share link or the
   // DISPLAY panel asks for it; the button mirrors the mask it controls.
-  if (EDITION.ui.scopeMask === false && !styleManager.hasShareState) {
-    setScopeMaskEnabled(false);
+  if (EDITION.ui.scopeMask === false) {
+    // Retired for the edition: nothing (share link, preset, scene) re-enables it.
+    setScopeMaskAvailable(false);
     styleManager.syncScopeControl?.();
   }
 

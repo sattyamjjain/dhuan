@@ -101,14 +101,37 @@ export const EDITION = Object.freeze({
 
   /**
    * Chrome policy. Upstream's tactical dressing (the classification HUD, the
-   * circular scope mask, the sensor presets, the voice dock) is off here: a
-   * public-health story reads better as a calm briefing than a spy feed.
-   * The DISPLAY panel can still turn the HUD and scope back on by hand.
+   * circular scope mask, the sensor presets, the voice dock) is retired here:
+   * a public-health story reads better as a calm briefing than a spy feed.
+   * `false` means unavailable, not merely off: share links, presets and
+   * scene playback cannot bring either back, and their controls are hidden.
    */
   ui: Object.freeze({
     scopeMask: false,
     tacticalHud: false,
+    /**
+     * Single-key shortcuts whose controls this edition hides stay off too:
+     * the sensor-preset keys (1–7), the HUD key (H) and the CCTV key (C).
+     */
+    keyboardShortcuts: Object.freeze({
+      styles: false,
+      hud: false,
+      cctv: false,
+    }),
   }),
+
+  /**
+   * The data keys this edition's layers can use, in the order the Data keys
+   * dialog lists them. Upstream's registry (src/keySetupCore.mjs) still knows
+   * every provider; keys for excluded layers are simply not asked for.
+   */
+  keyIds: Object.freeze([
+    'google-maps',
+    'cesium-ion',
+    'firms',
+    'cpcb',
+    'opensky',
+  ]),
 
   /** The first-run dialog's one persuasive line and its primary mission. */
   firstRun: Object.freeze({

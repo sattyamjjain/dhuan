@@ -40,6 +40,8 @@ export function inkFor(hex) {
   return luminance > 0.18 ? '#101418' : '#ffffff';
 }
 const STOP_LABEL = msg('Stop the scene');
+const PLAYING_LABEL = msg('Playing Smog Season Live. Press Escape to stop.');
+const STOPPED_LABEL = msg('Scene stopped.');
 
 /**
  * Mount the strip into `#dhuan-story`.
@@ -97,7 +99,10 @@ export function initStoryStrip({
   const fires = buildStat('fires', 'local_fire_department');
   const air = buildStat('air', 'air');
   const meta = make('p', 'story-meta', root);
-  meta.setAttribute('role', 'status');
+  // The time line changes every minute; only the scene's start and stop are
+  // worth announcing, through a visually hidden status line of their own.
+  const live = make('span', 'story-live', root);
+  live.setAttribute('role', 'status');
   const play = make('button', 'story-play', root);
   play.type = 'button';
   const playIcon = icon('play_arrow', play);
@@ -288,6 +293,9 @@ export function initStoryStrip({
     playIcon.textContent = running ? 'close' : 'play_arrow';
     playText.textContent = t(running ? STOP_LABEL : PLAY_LABEL);
     play.dataset.running = String(running);
+    // Escape stops a running scene (sceneControls); say so where it applies.
+    if (running) play.setAttribute('aria-keyshortcuts', 'Escape');
+    else play.removeAttribute('aria-keyshortcuts');
   };
 
   const refresh = () => {
@@ -333,6 +341,7 @@ export function initStoryStrip({
       const next = Boolean(notification?.state?.running);
       if (next !== running) {
         running = next;
+        live.textContent = t(next ? PLAYING_LABEL : STOPPED_LABEL);
         paintPlay();
       }
     });

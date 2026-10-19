@@ -40,7 +40,7 @@ export function mapStackChipModel(stack, activeId) {
   const requiresIon = stack?.requiresIon === true;
   // Stack labels are provider names and stay English; the sentence translates.
   const fallbackReason = requiresIon
-    ? t('Needs {envVars} — add it in Provider Settings', {
+    ? t('Needs {envVars} — add it in Data keys', {
         envVars: keySetupRequirementEnvVars('cesium-ion'),
       })
     : t('{label} is unavailable', {

@@ -21,8 +21,9 @@ const AIR_LAYER_ID = 'air-quality';
 const PLAY_LABEL = msg('Play Smog Season Live');
 
 /**
- * Dark ink on a light band (yellow, light green), white on a dark one, so the
- * badge word stays readable on every published CPCB colour.
+ * Dark ink on every band but the darkest (Severe maroon), so the badge word
+ * clears 4.5:1 on each published CPCB colour: white on the Very Poor red only
+ * reaches 4.0:1, dark ink reaches 4.8:1.
  * @param {string} hex - `#rrggbb`
  * @returns {string}
  */
@@ -36,7 +37,7 @@ export function inkFor(hex) {
   };
   const luminance =
     0.2126 * channel(16) + 0.7152 * channel(8) + 0.0722 * channel(0);
-  return luminance > 0.4 ? '#101418' : '#ffffff';
+  return luminance > 0.18 ? '#101418' : '#ffffff';
 }
 const STOP_LABEL = msg('Stop the scene');
 

@@ -16,7 +16,7 @@ html[data-edition='dhuan'] {
   --accent-glow: rgba(255, 138, 60, 0.22);
   --text-primary: #f2f4f7;
   --text-secondary: #b4bcc8;
-  --text-dim: #8a94a3;
+  --text-dim: #97a1b0;
   --menu-bg: #141922;
   --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   /* Upstream dresses most chrome in mono; the edition reads it in the UI
@@ -34,7 +34,7 @@ html[data-edition='dhuan'] {
   --panel-surface-title: var(--text-secondary);
   --dh-surface-2: #1a202b;
   --dh-surface-3: #232a36;
-  --dh-text-3: #8a94a3;
+  --dh-text-3: #97a1b0;
   --dh-ember: #ff8a3c;
   --dh-ember-hover: #ff9f5c;
   --dh-ember-ink: #1a0f07;

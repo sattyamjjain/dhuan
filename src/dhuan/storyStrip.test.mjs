@@ -8,7 +8,8 @@ test('badge ink is dark on the light NAQI bands and white on the dark ones', () 
   assert.equal(inkFor(byId.get('moderate').color), '#101418', 'yellow');
   assert.equal(inkFor(byId.get('satisfactory').color), '#101418', 'light green');
   assert.equal(inkFor(byId.get('severe').color), '#ffffff', 'maroon');
-  assert.equal(inkFor(byId.get('very-poor').color), '#ffffff', 'red');
+  assert.equal(inkFor(byId.get('very-poor').color), '#101418', 'red');
+  assert.equal(inkFor(byId.get('good').color), '#101418', 'green');
   assert.equal(inkFor('not a colour'), '#ffffff', 'unknown input never throws');
 });
 

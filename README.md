@@ -168,6 +168,18 @@ upstream pull request for the CPCB provider.
 Never: live trains, any Indian CCTV, military or installation layers, people, faces, phones,
 or a clip that says "Punjab did this" without the caveat.
 
+## Contributing
+
+Issues and pull requests for anything India-specific are welcome here; see
+[CONTRIBUTING.md](CONTRIBUTING.md) for the checks to run and
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for how we treat each other. Security
+reports go through [SECURITY.md](SECURITY.md), privately. Improvements to the
+globe itself belong upstream.
+
+## License
+
+MIT, like upstream. See [LICENSE](LICENSE); both copyright lines stay.
+
 ## Credits
 
 Built on **God's Eye View** by Bilawal Sidhu and Sameh Khamis, MIT. The upstream copyright

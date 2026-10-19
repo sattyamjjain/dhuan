@@ -1,3 +1,20 @@
+# Contributing to Dhuan
+
+Dhuan is the India smog-season edition of God's Eye View. Edition work lives in a
+few places: policy in `src/edition.js`, the story strip and city table in
+`src/dhuan/`, the theme in `src/ui/styles/dhuan.css`, the CPCB provider in
+`src/layers/airQuality/` and `server/providers/cpcb.js`. Open issues and pull
+requests here for anything India-specific. Improvements to the globe itself,
+the layers that every edition shares, belong upstream at
+[bilawalsidhu/gods-eye-view](https://github.com/bilawalsidhu/gods-eye-view);
+this repository pulls them in through the `upstream` remote.
+
+Everything below is upstream's guide and applies here unchanged: the same
+Node version, the same checks (`npm test`, `npm run format:check`,
+`npm run check:boundaries`), the same changelog fragments.
+
+---
+
 # Contributing to God's Eye View
 
 Thanks for being here. God's Eye View is an open foundation for live spatial intelligence in the browser, and it gets better when more people run it, break it, and extend it.
@@ -7,8 +24,8 @@ Thanks for being here. God's Eye View is an open foundation for live spatial int
 Use Node.js 24.14.x or 26.x (also enforced by `package.json`).
 
 ```bash
-git clone https://github.com/bilawalsidhu/gods-eye-view.git
-cd gods-eye-view
+git clone https://github.com/sattyamjjain/dhuan.git
+cd dhuan
 nvm install 24.14.0
 nvm use 24.14.0
 npm install

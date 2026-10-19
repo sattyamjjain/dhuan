@@ -6,13 +6,16 @@
   "type": "module",
   "license": "MIT",
   "author": "Bilawal Sidhu",
-  "homepage": "https://github.com/bilawalsidhu/gods-eye-view#readme",
+  "contributors": [
+    "Sattyam Jain (Dhuan edition)"
+  ],
+  "homepage": "https://github.com/sattyamjjain/dhuan#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bilawalsidhu/gods-eye-view.git"
+    "url": "https://github.com/sattyamjjain/dhuan.git"
   },
   "bugs": {
-    "url": "https://github.com/bilawalsidhu/gods-eye-view/issues"
+    "url": "https://github.com/sattyamjjain/dhuan/issues"
   },
   "engines": {
     "node": ">=24.14.0 <25 || >=26 <27"

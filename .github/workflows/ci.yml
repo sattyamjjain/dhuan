@@ -63,6 +63,10 @@ jobs:
     # Hermetic: every Mapillary request is answered from fixtures, so the
     # dummy token below never leaves the page.
     name: Street Level browser gate
+    # Skipped in Dhuan: this gate drives the Street Level and CCTV panels,
+    # which the edition keeps out of its catalog (EDITION.excludedLayerIds).
+    # The job stays verbatim so upstream's CI contract tests still read it.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:

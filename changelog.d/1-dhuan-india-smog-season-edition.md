@@ -30,6 +30,9 @@
   The smog mission opens once any story feed answers (a slow CPCB shows at
   its row instead of holding the welcome shut), the CPCB proxy warms its cache
   at boot and waits 45 s per page, and the browser source waits 40 s.
+  The left rail no longer clips the Layers panel after a scene plays (it
+  measured content hidden by recording-mode as empty); focus returns to the
+  scene's START after playback and never sits in an auto-collapsed panel.
   All of it lives in `src/ui/styles/dhuan.css`
   (tokens scoped to `html[data-edition="dhuan"]`) and `src/dhuan/storyStrip.js`;
   upstream sheets are untouched (Sattyam Jain).

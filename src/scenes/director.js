@@ -1804,6 +1804,13 @@ export class SceneDirector {
     this._usesAuthoredCamera = queue.some(({ shot }) => !!shot.move);
 
     // Transition to running state
+    // Playback hides the Scenes panel, which blurs a focused START to body;
+    // remember it so the keyboard lands back where it pressed.
+    const activeElement = globalThis.document?.activeElement ?? null;
+    this._focusToRestore =
+      activeElement && activeElement.closest?.('#scene-panel')
+        ? activeElement
+        : null;
     this._running = true;
     this._previewRun = preview;
     if (preview) this._setPlaybackActive(true);
@@ -2461,6 +2468,24 @@ export class SceneDirector {
    * Stops the progress ticker, exits recording mode only when owned, finalizes telemetry,
    * and resets UI buttons to the idle state.
    */
+  /**
+   * Put the keyboard back on the control that started the run, if the run
+   * took it (recording-mode hides the panel and the browser blurs to body).
+   * Never steals focus the visitor moved elsewhere meanwhile.
+   */
+  _restoreFocusAfterRun() {
+    const home = this._focusToRestore;
+    this._focusToRestore = null;
+    const doc = globalThis.document;
+    if (!home || !doc || doc.activeElement !== doc.body) return;
+    const target =
+      home.isConnected && !home.disabled
+        ? home
+        : doc.getElementById('scene-start-btn');
+    if (target && target.isConnected && !target.disabled)
+      target.focus?.({ preventScroll: true });
+  }
+
   _finishRun() {
     this._setSceneMediaPlayback();
     this._clock.finish();
@@ -2490,6 +2515,7 @@ export class SceneDirector {
 
     this._runToken = null;
     this._setButtons(false);
+    this._restoreFocusAfterRun();
     const clockSnapshot = this._clock.snapshot;
     if (clockSnapshot) {
       const scene = this._project.scenes.find(

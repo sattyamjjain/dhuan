@@ -133,9 +133,15 @@ export function layoutLeftPanelRail({
   const expandedPanelsInDomOrder = panels.filter(
     (panel) => !panel.classList.contains('collapsed'),
   );
-  const preferredExpandedPanel = expandedPanelsInDomOrder.find(
-    (panel) => panel.id === preferredPanelId,
-  );
+  // Match the right lane: a focused panel is the fallback owner, so a
+  // presentation collapse never hides the control the keyboard is on.
+  const activeElement = stack.ownerDocument?.activeElement ?? null;
+  const focusedExpandedPanel = activeElement
+    ? expandedPanelsInDomOrder.find((panel) => panel.contains(activeElement))
+    : undefined;
+  const preferredExpandedPanel =
+    expandedPanelsInDomOrder.find((panel) => panel.id === preferredPanelId) ||
+    focusedExpandedPanel;
   // Auto-collapse is a presentation fallback, not permission to undo the
   // user's newest disclosure. Measure and allocate that explicitly opened
   // panel first so an older expanded sibling yields when the corridor cannot

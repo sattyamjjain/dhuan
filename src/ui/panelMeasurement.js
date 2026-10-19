@@ -19,11 +19,16 @@ export function measurePanelNaturalHeight(panel, getComputedStyle) {
   const innerStyle = getComputedStyle(inner);
   const paddingBottom = parseFloat(innerStyle.paddingBottom) || 0;
   let contentBottom = parseFloat(innerStyle.paddingTop) || 0;
+  // A mode that hides the whole panel (recording-mode, clean view) sets
+  // visibility:hidden on the panel and every child inherits it. Hidden
+  // content keeps its layout, so it still measures; only a child hidden on
+  // its own is content the panel does not need room for.
+  const inheritedHidden = innerStyle.visibility === 'hidden';
 
   for (const child of inner.children) {
     const childStyle = getComputedStyle(child);
-    if (childStyle.display === 'none' || childStyle.visibility === 'hidden')
-      continue;
+    if (childStyle.display === 'none') continue;
+    if (childStyle.visibility === 'hidden' && !inheritedHidden) continue;
     const childRect = child.getBoundingClientRect();
     const marginBottom = parseFloat(childStyle.marginBottom) || 0;
     const naturalChildHeight = Math.max(

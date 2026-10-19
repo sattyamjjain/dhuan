@@ -64,7 +64,16 @@ feed answers and the strip offers "Turn on …" for the one that did not; the
 CPCB proxy warms its cache at boot (`warmOnStart`) and allows 45 s per
 data.gov.in page (25–30 s observed), with the browser source waiting 40 s. The
 dev server must run on Node 24 (`engines`): Node 22 cannot instantiate the
-wind GRIB decoder's wasm and Wind reports "upstream unavailable". Under the wordmark a story strip (`src/dhuan/storyStrip.js`) shows
+wind GRIB decoder's wasm and Wind reports "upstream unavailable". The Layers panel twice came back
+from playback clipped to 28px: `panelMeasurement.js` skipped children whose
+`visibility: hidden` was inherited from recording-mode, and a mid-scene layout
+pass (layer rows mutate) kept that allocation. It now measures inherited-hidden
+content, `shellFacade.setRecordingMode(false)` schedules a settled relayout,
+the left rail treats the focused panel as the fallback owner (as the right rail
+does), the Director restores focus to a START that playback blurred, and
+`#scene-status` is a polite live region. Upstream's Street Level browser gate
+stays in ci.yml verbatim but skipped (`if: false`): its panels are excluded
+here. Under the wordmark a story strip (`src/dhuan/storyStrip.js`) shows
 the Punjab + Haryana fire count, Delhi NCR's worst CPCB station with its band in
 words, the time the numbers were taken, and a button that plays Smog Season Live
 once (`startScene(id, { single: true })`). The Layers panel opens by default and

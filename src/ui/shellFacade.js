@@ -1268,7 +1268,12 @@ export class ShellFacade {
    * @returns {void}
    */
   setRecordingMode(enabled, options) {
-    return this._recording.setRecordingMode(enabled, options);
+    const result = this._recording.setRecordingMode(enabled, options);
+    // Leaving a mode that hid the rails: measure the panels again once they
+    // are visible, so an allocation made mid-playback does not stick.
+    if (!enabled)
+      this._panelLayout?._scheduleAdaptivePanelLayout?.({ settle: true });
+    return result;
   }
 
   /** Reveal the map-only parameter surface in the standard Display scroll owner. */

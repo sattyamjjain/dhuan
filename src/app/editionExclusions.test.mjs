@@ -31,11 +31,26 @@ function fixtureSurface(signal) {
   });
 }
 
-test('the edition names the five layers it keeps out, and no others', () => {
-  assert.deepEqual(
-    [...EDITION.excludedLayerIds],
-    ['military', 'military-awareness', 'military-installations', 'cctv', 'alpr-cameras'],
-  );
+test('the edition keeps the five sensitive layers out and the story layers in', () => {
+  for (const id of [
+    'military',
+    'military-awareness',
+    'military-installations',
+    'cctv',
+    'alpr-cameras',
+  ])
+    assert.ok(EDITION.excludedLayerIds.includes(id), `${id} is excluded`);
+  for (const id of [
+    'local-firms',
+    'air-quality',
+    'wind',
+    'weather-satellite',
+    'weather-radar',
+    'earthquakes',
+    'flights',
+    'recent-imagery',
+  ])
+    assert.equal(isExcludedLayerId(id), false, `${id} stays in the panel`);
   assert.equal(isExcludedLayerId('cctv'), true);
   assert.equal(isExcludedLayerId('local-firms'), false);
   assert.equal(isExcludedLayerId(undefined), false);

@@ -93,9 +93,9 @@ test('applyDocumentLanguage sets lang and dir', () => {
 });
 
 test('t() returns English text in English and translates in Russian', () => {
-  assert.equal(t('POWERED UP'), 'POWERED UP');
+  assert.equal(t('All data keys set'), 'All data keys set');
   setLocale('ru');
-  assert.notEqual(t('POWERED UP'), 'POWERED UP');
+  assert.notEqual(t('All data keys set'), 'All data keys set');
 });
 
 test('t() interpolates named values and keeps unknown names literal', () => {
@@ -116,18 +116,14 @@ test('t() falls back to English for text without a translation', () => {
 
 test('tn() picks English and Russian plural forms', () => {
   const label = (count) =>
-    tn(
-      count,
-      'POWER UP · {count} KEY WAITING',
-      'POWER UP · {count} KEYS WAITING',
-    );
-  assert.equal(label(1), 'POWER UP · 1 KEY WAITING');
-  assert.equal(label(3), 'POWER UP · 3 KEYS WAITING');
+    tn(count, '{count} data key to add', '{count} data keys to add');
+  assert.equal(label(1), '1 data key to add');
+  assert.equal(label(3), '3 data keys to add');
   setLocale('ru');
-  assert.match(label(1), / 1 КЛЮЧ(?![А-ЯЁ])/);
-  assert.match(label(3), / 3 КЛЮЧА(?![А-ЯЁ])/);
-  assert.match(label(5), / 5 КЛЮЧЕЙ(?![А-ЯЁ])/);
-  assert.match(label(21), / 21 КЛЮЧ(?![А-ЯЁ])/);
+  assert.match(label(1), /^1 ключ(?![а-яё])/);
+  assert.match(label(3), /^3 ключа(?![а-яё])/);
+  assert.match(label(5), /^5 ключей(?![а-яё])/);
+  assert.match(label(21), /^21 ключ(?![а-яё])/);
 });
 
 test('t() context separates identical English with different meanings', () => {
@@ -166,8 +162,8 @@ function fakeElement({ text = '', attributes = {} } = {}) {
 }
 
 test('applyDocumentTranslations translates opted-in text and attributes in place', () => {
-  const label = fakeElement({ text: '\n  POWERED\n  UP  ' });
-  const pin = fakeElement({ attributes: { title: 'POWERED UP' } });
+  const label = fakeElement({ text: '\n  All data\n  keys set  ' });
+  const pin = fakeElement({ attributes: { title: 'All data keys set' } });
   const unknown = fakeElement({ text: 'No such message' });
   const doc = {
     querySelectorAll(selector) {
@@ -183,8 +179,8 @@ test('applyDocumentTranslations translates opted-in text and attributes in place
   );
   setLocale('ru');
   assert.equal(applyDocumentTranslations(doc), 2);
-  assert.equal(label.textContent, t('POWERED UP'));
-  assert.equal(pin.attrs.get('title'), t('POWERED UP'));
+  assert.equal(label.textContent, t('All data keys set'));
+  assert.equal(pin.attrs.get('title'), t('All data keys set'));
   assert.equal(unknown.textContent, 'No such message');
 });
 

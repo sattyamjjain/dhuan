@@ -14,6 +14,7 @@ import {
   readingsAreStale,
   readingsInView,
   selectAirQualityOverlayCohort,
+  summarizeAirQualityRegion,
 } from './model.js';
 export * from './model.js';
 export {
@@ -43,7 +44,11 @@ const READOUT_LIMIT = 5;
  * network is a second source, not a second layer. A source that names none
  * is ECCC's, the first registered provider.
  */
-export function createAirQualityLayer({ source, overlayHost } = {}) {
+export function createAirQualityLayer({
+  source,
+  overlayHost,
+  storyRegion = null,
+} = {}) {
   if (typeof source?.getSnapshot !== 'function')
     throw new TypeError('Air quality requires a snapshot source');
   if (!overlayHost) throw new TypeError('Air quality requires an overlay host');
@@ -365,6 +370,11 @@ export function createAirQualityLayer({ source, overlayHost } = {}) {
         keyRequired: _keyRequired,
         error: _keyRequired ? t('KEY REQUIRED') : _lastError,
         observedAt: newestObservation(_readings),
+        // The edition's city read (worst station, stations in the top two
+        // bands) for the story strip. Null when no region is configured.
+        story: storyRegion
+          ? summarizeAirQualityRegion(_readings, storyRegion, provider.id)
+          : null,
         // Only a completed refresh can be stale; before one there is no feed.
         // A missing key is a step to take, not a stale feed.
         stale:

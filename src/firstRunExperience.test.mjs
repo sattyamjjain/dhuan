@@ -1,4 +1,5 @@
 import { expandApplicationHtml } from '../build/application-html.js';
+import { EDITION } from './edition.js';
 import { readStylesheet } from './testSupport/readStylesheet.mjs';
 import { GEV_REALTIME_TOOLS } from '../server/providers/openai/tools.js';
 import test from 'node:test';
@@ -591,6 +592,7 @@ test('the menu is the four owner-ordered missions', () => {
     'space-missions',
     'environmental',
     'explore',
+    'smog',
   ]);
   assert.equal(
     FIRST_RUN_MISSIONS.infrastructure,
@@ -807,51 +809,43 @@ test('markup, startup ordering and accessibility remain pinned', () => {
     html,
     /id="first-run-launcher" role="dialog"[^>]*aria-labelledby="first-run-title"[^>]*hidden/,
   );
-  assert.equal((html.match(/data-first-run-choice=/g) || []).length, 4);
+  assert.equal((html.match(/data-first-run-choice=/g) || []).length, 2);
   assert.match(
     html,
     /data-first-run-status[^>]*role="status"[^>]*aria-live="polite"/,
   );
   assert.match(html, /<input type="checkbox" data-first-run-suppress \/>/);
-  assert.match(html, /<strong data-first-run-environmental-title>/);
-  // Subcopy must name BOTH feeds the tile turns on — a tile that promised only
-  // half of what it does is the defect this replaced. Only the VISIBLE <small>
-  // text counts; the comment beside it naturally says the words too.
-  const envTile = html.slice(
-    html.indexOf('data-first-run-choice="environmental"'),
+  // The edition tile names every feed it turns on (fires, air, wind), read
+  // off the VISIBLE <small> text only.
+  const smogTile = html.slice(html.indexOf('data-first-run-choice="smog"'));
+  const visible = smogTile.slice(
+    smogTile.indexOf('<small'),
+    smogTile.indexOf('</small>'),
   );
-  const visible = envTile.slice(
-    envTile.indexOf('<small>'),
-    envTile.indexOf('</small>'),
-  );
-  assert.match(visible, /earthquakes/i);
-  assert.match(
-    visible,
-    /fires?/i,
-    'the tile must promise the fires it enables',
-  );
+  assert.match(visible, /fires?/i, 'the tile must promise the fires it enables');
+  assert.match(visible, /air quality/i);
+  assert.match(visible, /wind/i);
+  assert.deepEqual(FIRST_RUN_MISSIONS.smog.layerIds, [
+    'local-firms',
+    'air-quality',
+    'wind',
+  ]);
+  assert.equal(FIRST_RUN_MISSIONS.smog.keepCamera, true);
 
-  // The card's one persuasive line is OWNER-AUTHORED and pinned verbatim,
-  // unspaced em dash included. This is copy, not prose to be improved in a
-  // passing edit — changing it needs the owner, not a nicer-sounding rewrite.
+  // The dialog's one persuasive line is the edition's, and the runtime paints
+  // it from EDITION.firstRun.description rather than a literal in this file.
   assert.ok(
     html.includes(
-      '<p id="first-run-description" data-i18n-runtime>It feels like a forbidden cockpit' +
-        '—then you realize the sources are public and the data is real.</p>',
+      `<p id="first-run-description" data-i18n-runtime>${EDITION.firstRun.description}</p>`,
     ),
-    'the owner-authored first-run line must ship exactly as written',
+    'the edition first-run line must ship as the policy states it',
   );
 
-  // Menu order is the owner's, read straight off the markup.
+  // Menu order, read straight off the markup.
   const order = [...html.matchAll(/data-first-run-choice="([a-z-]+)"/g)].map(
     (match) => match[1],
   );
-  assert.deepEqual(order, [
-    'contacts',
-    'space-missions',
-    'environmental',
-    'explore',
-  ]);
+  assert.deepEqual(order, ['smog', 'explore']);
   assert.doesNotMatch(
     html,
     /data-first-run-choice="infrastructure"/,

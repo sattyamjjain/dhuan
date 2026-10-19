@@ -1,0 +1,1165 @@
+/* ═══════════════════════════════════════════════════════════════
+   DHUAN — edition theme
+   A calm briefing over a living globe. Charcoal surfaces, one warm
+   ember accent for actions and fire, the data colours left alone.
+   Loaded last; everything here is scoped to html[data-edition='dhuan']
+   so the upstream sheets stay untouched for other editions.
+   ═══════════════════════════════════════════════════════════════ */
+
+html[data-edition='dhuan'] {
+  --bg-dark: #0b0e13;
+  --glass-bg: rgba(16, 20, 27, 0.86);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-hover: rgba(255, 255, 255, 0.22);
+  --accent: #ff8a3c;
+  --accent-dim: rgba(255, 138, 60, 0.16);
+  --accent-glow: rgba(255, 138, 60, 0.22);
+  --text-primary: #f2f4f7;
+  --text-secondary: #b4bcc8;
+  --text-dim: #8a94a3;
+  --menu-bg: #141922;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Upstream dresses most chrome in mono; the edition reads it in the UI
+     face. Tabular figures keep every number column steady. */
+  --font-mono: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-devanagari: 'Noto Sans Devanagari', 'Inter', system-ui, sans-serif;
+  --panel-radius: 14px;
+  --btn-radius: 9px;
+  --left-stack-x: 24px;
+  --right-rail-x: 24px;
+  --left-stack-top: 262px;
+  --left-collapsed-width: 200px;
+  --display-panel-expanded-width: 284px;
+  --panel-surface-shadow: var(--dh-shadow);
+  --panel-surface-title: var(--text-secondary);
+  --dh-surface-2: #1a202b;
+  --dh-surface-3: #232a36;
+  --dh-text-3: #8a94a3;
+  --dh-ember: #ff8a3c;
+  --dh-ember-hover: #ff9f5c;
+  --dh-ember-ink: #1a0f07;
+  --dh-ok: #4cd37d;
+  --dh-warn: #ffc14d;
+  --dh-bad: #ff6b6b;
+  --dh-info: #7fb8ff;
+  --dh-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --dh-blur: blur(14px) saturate(1.2);
+  color-scheme: dark;
+}
+
+html[data-edition='dhuan'] body {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+html[data-edition='dhuan'] [lang='hi'] {
+  font-family: var(--font-devanagari);
+}
+
+/* ── Retired tactical dressing ─────────────────────────────────── */
+html[data-edition='dhuan'] #style-indicator,
+html[data-edition='dhuan'] .panel-glow,
+html[data-edition='dhuan'] .first-run-scanline,
+html[data-edition='dhuan'] .key-setup-scanline,
+html[data-edition='dhuan'] #command-dock > #control-panel,
+html[data-edition='dhuan'] #command-dock > #gev-voice-control,
+html[data-edition='dhuan'] #global-context-panel,
+html[data-edition='dhuan'] #radio-panel,
+html[data-edition='dhuan'] #cctv-panel,
+html[data-edition='dhuan'] #street-level-panel,
+html[data-edition='dhuan'] #hud-toggle,
+html[data-edition='dhuan'] #hud-layout-row,
+html[data-edition='dhuan'] .cyber-sonar-control {
+  display: none !important;
+}
+
+/* ── Brand ─────────────────────────────────────────────────────── */
+html[data-edition='dhuan'] #title-bar {
+  top: 22px;
+  left: 24px;
+}
+
+html[data-edition='dhuan'] #title-bar h1 {
+  gap: 0;
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+  text-shadow: none;
+  line-height: 1;
+}
+
+html[data-edition='dhuan'] .wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+html[data-edition='dhuan'] .wordmark-hi {
+  font-family: var(--font-devanagari);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+html[data-edition='dhuan'] #title-bar .title-accent,
+html[data-edition='dhuan'] .loader-content .title-accent {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+html[data-edition='dhuan'] #title-bar .subtitle {
+  margin-top: 7px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-secondary);
+}
+
+/* ── Story strip ───────────────────────────────────────────────── */
+html[data-edition='dhuan'] #dhuan-story {
+  position: fixed;
+  top: 96px;
+  left: 24px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(380px, calc(100vw - 48px));
+}
+
+html[data-edition='dhuan'] #dhuan-story[hidden] {
+  display: none;
+}
+
+html[data-edition='dhuan'] .story-stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+html[data-edition='dhuan'] .story-stat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: var(--dh-shadow);
+  backdrop-filter: var(--dh-blur);
+  -webkit-backdrop-filter: var(--dh-blur);
+}
+
+html[data-edition='dhuan'] .story-stat[hidden] {
+  display: none;
+}
+
+html[data-edition='dhuan'] .story-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  font-size: 20px;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border-radius: 10px;
+}
+
+html[data-edition='dhuan'] .story-stat-air .story-icon {
+  color: var(--dh-info);
+  background: rgba(127, 184, 255, 0.14);
+}
+
+html[data-edition='dhuan'] .story-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+html[data-edition='dhuan'] .story-value {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+html[data-edition='dhuan'] .story-stat[data-state='off'] .story-value,
+html[data-edition='dhuan'] .story-stat[data-state='key'] .story-value,
+html[data-edition='dhuan'] .story-stat[data-state='loading'] .story-value,
+html[data-edition='dhuan'] .story-stat[data-state='empty'] .story-value {
+  color: var(--dh-text-3);
+}
+
+html[data-edition='dhuan'] .story-label {
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+html[data-edition='dhuan'] .story-badge {
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--band-ink, #fff);
+  background: var(--band, var(--dh-surface-3));
+  border-radius: 999px;
+}
+
+html[data-edition='dhuan'] .story-enable {
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+html[data-edition='dhuan'] .story-enable:hover {
+  color: var(--dh-ember-hover);
+}
+
+html[data-edition='dhuan'] .story-meta {
+  align-self: flex-start;
+  margin: 0;
+  padding: 5px 10px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  backdrop-filter: var(--dh-blur);
+  -webkit-backdrop-filter: var(--dh-blur);
+}
+
+html[data-edition='dhuan'] .story-play {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 18px 0 12px;
+  font: 600 13.5px/1 var(--font-sans);
+  color: var(--dh-ember-ink);
+  background: var(--accent);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  box-shadow: var(--dh-shadow);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+html[data-edition='dhuan'] .story-play:hover {
+  background: var(--dh-ember-hover);
+}
+
+html[data-edition='dhuan'] .story-play:active {
+  transform: translateY(1px);
+}
+
+html[data-edition='dhuan'] .story-play[aria-pressed='true'] {
+  color: var(--text-primary);
+  background: var(--dh-surface-2);
+  border-color: var(--glass-border-hover);
+}
+
+html[data-edition='dhuan'] .story-play .story-icon {
+  width: auto;
+  height: auto;
+  font-size: 22px;
+  color: inherit;
+  background: none;
+}
+
+html[data-edition='dhuan'] .story-play[hidden],
+html[data-edition='dhuan'] body.scene-playback-mode #dhuan-story,
+html[data-edition='dhuan'] body.recording-mode #dhuan-story,
+html[data-edition='dhuan'] body.cockpit-mode #dhuan-story,
+html[data-edition='dhuan'] body.ui-clean-view #dhuan-story {
+  display: none;
+}
+
+/* ── Map tools (top right) ─────────────────────────────────────── */
+html[data-edition='dhuan'] #top-center-actions {
+  top: 22px;
+  right: 24px;
+  left: auto;
+  gap: 2px;
+  padding: 4px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  box-shadow: var(--dh-shadow);
+  backdrop-filter: var(--dh-blur);
+  -webkit-backdrop-filter: var(--dh-blur);
+  transform: none;
+}
+
+html[data-edition='dhuan'] #top-center-actions button {
+  width: 36px;
+  height: 36px;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html[data-edition='dhuan'] #top-center-actions button:hover,
+html[data-edition='dhuan'] #top-center-actions button:focus-visible {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: transparent;
+  transform: none;
+}
+
+html[data-edition='dhuan'] #top-center-actions button[aria-pressed='true'] {
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+/* ── Panels ────────────────────────────────────────────────────── */
+html[data-edition='dhuan'] #left-panel-stack,
+html[data-edition='dhuan'] #data-panel:not(.collapsed),
+html[data-edition='dhuan'] #scene-panel:not(.collapsed) {
+  width: 332px;
+}
+
+html[data-edition='dhuan'] #data-panel,
+html[data-edition='dhuan'] #scene-panel,
+html[data-edition='dhuan'] #weather-panel,
+html[data-edition='dhuan'] #recent-imagery-panel,
+html[data-edition='dhuan'] #pp-toggles:not(.collapsed) {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--panel-radius);
+  box-shadow: var(--dh-shadow);
+  backdrop-filter: var(--dh-blur);
+  -webkit-backdrop-filter: var(--dh-blur);
+}
+
+html[data-edition='dhuan'] .panel-header {
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+html[data-edition='dhuan'] .panel-title,
+html[data-edition='dhuan'] .pp-header-label,
+html[data-edition='dhuan'] .cctv-summary-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+html[data-edition='dhuan'] .panel-divider {
+  background: var(--glass-border);
+}
+
+html[data-edition='dhuan'] .panel-collapse-btn,
+html[data-edition='dhuan'] .pp-collapse-btn {
+  width: 26px;
+  height: 26px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+}
+
+html[data-edition='dhuan'] .panel-collapse-btn:hover,
+html[data-edition='dhuan'] .pp-collapse-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--glass-border-hover);
+}
+
+html[data-edition='dhuan'] .data-toggle-list::-webkit-scrollbar-thumb,
+html[data-edition='dhuan'] [data-rail-scroller]::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Layer rows */
+html[data-edition='dhuan'] .data-layer-group-heading {
+  margin: 10px 10px 4px;
+  padding-top: 12px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--dh-text-3);
+  border-top-color: var(--glass-border);
+}
+
+html[data-edition='dhuan'] .data-toggle-row {
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+html[data-edition='dhuan'] .data-toggle-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+html[data-edition='dhuan'] .data-toggle-top {
+  gap: 10px;
+}
+
+html[data-edition='dhuan'] .data-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+
+html[data-edition='dhuan'] .data-toggle-row:has(.data-toggle-btn.active) .data-icon {
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+html[data-edition='dhuan'] .data-name {
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-primary);
+}
+
+html[data-edition='dhuan'] .data-toggle-meta {
+  margin-top: 3px;
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--dh-text-3);
+}
+
+html[data-edition='dhuan'] .data-count {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--text-secondary);
+}
+
+/* The switch: a pill whose word is its state, so colour is never alone. */
+html[data-edition='dhuan'] .data-toggle-btn {
+  min-width: 46px;
+  min-height: 26px;
+  padding: 4px 10px;
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+}
+
+html[data-edition='dhuan'] .data-toggle-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--glass-border-hover);
+}
+
+html[data-edition='dhuan'] .data-toggle-btn.active {
+  color: #ffc294;
+  background: var(--accent-dim);
+  border-color: rgba(255, 138, 60, 0.45);
+  box-shadow: none;
+}
+
+html[data-edition='dhuan'] .data-toggle-btn.active.feed-live {
+  color: #8fe6ad;
+  background: rgba(76, 211, 125, 0.14);
+  border-color: rgba(76, 211, 125, 0.4);
+}
+
+html[data-edition='dhuan'] .data-toggle-btn.active.feed-stale,
+html[data-edition='dhuan'] .data-toggle-btn.active.feed-loading,
+html[data-edition='dhuan'] .data-toggle-btn.transitioning {
+  color: #ffd48a;
+  background: rgba(255, 193, 77, 0.14);
+  border-color: rgba(255, 193, 77, 0.4);
+}
+
+html[data-edition='dhuan'] .data-toggle-btn.feed-error,
+html[data-edition='dhuan'] .data-toggle-btn.feed-unavailable,
+html[data-edition='dhuan'] .data-toggle-btn.feed-key-required {
+  color: #ff9d9d;
+  background: rgba(255, 107, 107, 0.14);
+  border-color: rgba(255, 107, 107, 0.4);
+}
+
+html[data-edition='dhuan'] .data-toggle-chip,
+html[data-edition='dhuan'] .rail-card-chips button,
+html[data-edition='dhuan'] .sl-seg-btn {
+  padding: 4px 10px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+}
+
+html[data-edition='dhuan'] .data-toggle-chip:hover,
+html[data-edition='dhuan'] .rail-card-chips button:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+html[data-edition='dhuan'] .data-toggle-chip.active,
+html[data-edition='dhuan'] .data-toggle-chip[aria-pressed='true'],
+html[data-edition='dhuan'] .rail-card-chips button.active,
+html[data-edition='dhuan'] .rail-card-chips button[aria-pressed='true'] {
+  color: var(--accent);
+  background: var(--accent-dim);
+  border-color: rgba(255, 138, 60, 0.45);
+}
+
+html[data-edition='dhuan'] .data-toggle-controls-info,
+html[data-edition='dhuan'] .rail-card-line {
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  line-height: 1.45;
+  letter-spacing: 0;
+  color: var(--dh-text-3);
+}
+
+html[data-edition='dhuan'] .data-toggle-legend-item {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+html[data-edition='dhuan'] .data-toggle-legend-swatch {
+  border-radius: 3px;
+}
+
+/* Layer glyphs: the edition hands the panel one Material glyph per row. */
+html[data-edition='dhuan'] .data-icon.material-symbols-outlined {
+  font-size: 16px;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 20;
+}
+
+/* Right rail cards */
+html[data-edition='dhuan'] .rail-card {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+}
+
+html[data-edition='dhuan'] .rail-card-title {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-primary);
+}
+
+html[data-edition='dhuan'] .rail-card-badge,
+html[data-edition='dhuan'] .rail-card-setting-label,
+html[data-edition='dhuan'] .weather-observed-scope {
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--dh-text-3);
+}
+
+html[data-edition='dhuan'] .rail-card-ramp,
+html[data-edition='dhuan'] .rail-card-scale {
+  border-radius: 4px;
+}
+
+/* ── Scene panel ───────────────────────────────────────────────── */
+html[data-edition='dhuan'] .scene-btn,
+html[data-edition='dhuan'] .pp-toggle-btn,
+html[data-edition='dhuan'] .pp-mode-btn,
+html[data-edition='dhuan'] .panel-layer-toggle,
+html[data-edition='dhuan'] .search-toggle-btn,
+html[data-edition='dhuan'] .dock-pin-btn {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+}
+
+html[data-edition='dhuan'] .scene-btn:hover,
+html[data-edition='dhuan'] .pp-toggle-btn:hover,
+html[data-edition='dhuan'] .pp-mode-btn:hover {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: var(--glass-border-hover);
+}
+
+html[data-edition='dhuan'] .scene-btn-danger {
+  color: #ff9d9d;
+}
+
+html[data-edition='dhuan'] .pp-toggle-btn.active,
+html[data-edition='dhuan'] .pp-mode-btn.active {
+  color: var(--accent);
+  background: var(--accent-dim);
+  border-color: rgba(255, 138, 60, 0.45);
+  box-shadow: none;
+}
+
+html[data-edition='dhuan'] #scene-select,
+html[data-edition='dhuan'] .pp-select,
+html[data-edition='dhuan'] select {
+  padding: 6px 8px;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  color: var(--text-primary);
+  background: var(--dh-surface-2);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+}
+
+html[data-edition='dhuan'] .scene-progress {
+  height: 4px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+  border: 0;
+  border-radius: 999px;
+}
+
+html[data-edition='dhuan'] #scene-progress-fill {
+  font-size: 0;
+  color: transparent;
+  background: var(--accent);
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+html[data-edition='dhuan'] #scene-status,
+html[data-edition='dhuan'] .scene-shot-list {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0;
+  color: var(--dh-text-3);
+}
+
+html[data-edition='dhuan'] .pp-label,
+html[data-edition='dhuan'] .pp-slider-mini-label,
+html[data-edition='dhuan'] .pp-slider-value {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+/* ── Dock: one search pill ─────────────────────────────────────── */
+html[data-edition='dhuan'] #command-dock {
+  grid-template-areas: 'locations';
+  grid-template-columns: minmax(260px, 1fr);
+  width: min(92vw, 400px);
+  padding: 4px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  box-shadow: var(--dh-shadow);
+  backdrop-filter: var(--dh-blur);
+  -webkit-backdrop-filter: var(--dh-blur);
+}
+
+html[data-edition='dhuan'] #command-dock > #location-bar,
+html[data-edition='dhuan'] #command-dock > #location-bar:not(.collapsed) {
+  flex-basis: auto;
+  width: 100%;
+  border-right: 0;
+  border-left: 0;
+}
+
+html[data-edition='dhuan'] #command-dock .location-toolbar {
+  justify-content: center;
+}
+
+html[data-edition='dhuan'] #command-dock .location-toolbar-label,
+html[data-edition='dhuan'] #command-dock .panel-title {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-primary);
+}
+
+html[data-edition='dhuan'] #command-dock .location-toolbar-label::after,
+html[data-edition='dhuan'] #command-dock .panel-title::after {
+  display: none;
+}
+
+html[data-edition='dhuan'] #command-dock .location-mini-city,
+html[data-edition='dhuan'] #command-dock .location-mini-poi {
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--dh-text-3);
+}
+
+html[data-edition='dhuan'] #command-dock .dock-popover-content {
+  padding: 14px 12px 12px;
+  background: #141922;
+  border: 1px solid var(--glass-border-hover);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+
+html[data-edition='dhuan'] #command-dock #location-search {
+  padding: 9px 12px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  letter-spacing: 0;
+  color: var(--text-primary);
+  background: var(--dh-surface-2);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+}
+
+html[data-edition='dhuan'] #command-dock .location-pill {
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  border-radius: 999px;
+}
+
+/* ── Corner actions ────────────────────────────────────────────── */
+html[data-edition='dhuan'] #key-setup-chip,
+html[data-edition='dhuan'] .locale-picker-button {
+  padding: 0 14px;
+  min-height: 36px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-secondary);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  box-shadow: var(--dh-shadow);
+  backdrop-filter: var(--dh-blur);
+  -webkit-backdrop-filter: var(--dh-blur);
+}
+
+html[data-edition='dhuan'] #key-setup-chip:hover,
+html[data-edition='dhuan'] .locale-picker-button:hover {
+  color: var(--text-primary);
+  border-color: var(--glass-border-hover);
+}
+
+html[data-edition='dhuan'] .locale-picker-popup {
+  font-family: var(--font-sans);
+  background: #141922;
+  border: 1px solid var(--glass-border-hover);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+
+/* ── Dialogs: welcome and data keys ────────────────────────────── */
+html[data-edition='dhuan'] #first-run-launcher,
+html[data-edition='dhuan'] #key-setup {
+  width: min(31rem, calc(100vw - 2rem));
+  padding: 24px;
+  font-family: var(--font-sans);
+  background: rgba(20, 25, 34, 0.96);
+  border: 1px solid var(--glass-border-hover);
+  border-radius: 18px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
+html[data-edition='dhuan'] .first-run-kicker,
+html[data-edition='dhuan'] .key-setup-kicker {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+html[data-edition='dhuan'] .first-run-kicker [lang='hi'] {
+  font-size: 16px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-primary);
+}
+
+html[data-edition='dhuan'] #first-run-title,
+html[data-edition='dhuan'] #key-setup-title {
+  margin: 10px 0 8px;
+  font-family: var(--font-sans);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--text-primary);
+}
+
+html[data-edition='dhuan'] #first-run-description,
+html[data-edition='dhuan'] #key-setup-description {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+html[data-edition='dhuan'] .first-run-choices {
+  display: grid;
+  gap: 8px;
+}
+
+html[data-edition='dhuan'] .first-run-choices button {
+  display: grid;
+  grid-template-columns: 40px 1fr 24px;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 12px 14px;
+  font-family: var(--font-sans);
+  text-align: left;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+html[data-edition='dhuan'] .first-run-choices button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--glass-border-hover);
+}
+
+html[data-edition='dhuan'] .first-run-choices button:first-child {
+  background: var(--accent-dim);
+  border-color: rgba(255, 138, 60, 0.45);
+}
+
+html[data-edition='dhuan'] .first-run-choices button:first-child:hover {
+  background: rgba(255, 138, 60, 0.24);
+}
+
+html[data-edition='dhuan'] .first-run-choices button > .material-symbols-outlined:first-child {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  color: var(--accent);
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+html[data-edition='dhuan'] .first-run-choices strong {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[data-edition='dhuan'] .first-run-choices small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--text-secondary);
+}
+
+html[data-edition='dhuan'] .first-run-arrow {
+  color: var(--dh-text-3);
+}
+
+html[data-edition='dhuan'] .first-run-footer,
+html[data-edition='dhuan'] .first-run-note,
+html[data-edition='dhuan'] .key-setup-footer,
+html[data-edition='dhuan'] .key-setup-note,
+html[data-edition='dhuan'] .key-setup-hint {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--dh-text-3);
+}
+
+html[data-edition='dhuan'] .first-run-footer {
+  margin-top: 16px;
+}
+
+html[data-edition='dhuan'] .first-run-suppress {
+  color: var(--text-secondary);
+}
+
+html[data-edition='dhuan'] .key-setup-apply {
+  min-height: 38px;
+  padding: 0 16px;
+  font: 600 13px/1 var(--font-sans);
+  letter-spacing: 0;
+  color: var(--dh-ember-ink);
+  background: var(--accent);
+  border: 0;
+  border-radius: 999px;
+}
+
+html[data-edition='dhuan'] .key-setup-apply:hover {
+  background: var(--dh-ember-hover);
+}
+
+/* ── Loading screen ────────────────────────────────────────────── */
+html[data-edition='dhuan'] .loader-content h2 {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 12px;
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+html[data-edition='dhuan'] .loader-content h2 [lang='hi'] {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+html[data-edition='dhuan'] .loader-content .title-accent {
+  font-size: 18px;
+}
+
+html[data-edition='dhuan'] .loader-status {
+  margin-top: 14px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-secondary);
+}
+
+html[data-edition='dhuan'] .loader-bar {
+  width: 160px;
+  height: 3px;
+  margin: 18px auto 0;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+}
+
+html[data-edition='dhuan'] .loader-bar span {
+  display: block;
+  width: 40%;
+  height: 100%;
+  background: var(--accent);
+  border-radius: inherit;
+  animation: dh-loader 1.4s ease-in-out infinite;
+}
+
+@keyframes dh-loader {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(260%);
+  }
+}
+
+html[data-edition='dhuan'] .loader-credit {
+  margin-top: 18px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--dh-text-3);
+}
+
+/* ── Toasts and status chips ───────────────────────────────────── */
+html[data-edition='dhuan'] #toast,
+html[data-edition='dhuan'] #global-loading-status,
+html[data-edition='dhuan'] #traffic-sync-chip,
+html[data-edition='dhuan'] #cctv-sync-chip {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-primary);
+  background: #1a202b;
+  border: 1px solid var(--glass-border-hover);
+  border-radius: 12px;
+  box-shadow: var(--dh-shadow);
+}
+
+html[data-edition='dhuan'] #global-loading-label {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ── Motion ────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html[data-edition='dhuan'] .loader-bar span {
+    width: 100%;
+    animation: none;
+  }
+
+  html[data-edition='dhuan'] .story-play,
+  html[data-edition='dhuan'] .first-run-choices button {
+    transition: none;
+  }
+}
+
+/* ── Small screens ─────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  html[data-edition='dhuan'] #title-bar {
+    top: 12px;
+    left: 14px;
+  }
+
+  html[data-edition='dhuan'] #title-bar h1 > span:last-child {
+    display: inline-flex;
+  }
+
+  html[data-edition='dhuan'] .wordmark-hi {
+    font-size: 24px;
+  }
+
+  html[data-edition='dhuan'] #title-bar .subtitle {
+    display: none;
+  }
+
+  html[data-edition='dhuan'] #top-center-actions {
+    top: 10px;
+    right: 12px;
+    padding: 3px;
+  }
+
+  html[data-edition='dhuan'] #top-center-actions button {
+    width: 36px;
+    height: 36px;
+  }
+
+  html[data-edition='dhuan'] #dhuan-story {
+    top: 58px;
+    right: 12px;
+    left: 12px;
+    gap: 6px;
+    width: auto;
+  }
+
+  html[data-edition='dhuan'] .story-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  html[data-edition='dhuan'] .story-stat {
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  html[data-edition='dhuan'] .story-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+
+  html[data-edition='dhuan'] .story-value {
+    font-size: 18px;
+  }
+
+  html[data-edition='dhuan'] .story-label {
+    font-size: 11px;
+  }
+
+  html[data-edition='dhuan'] .story-meta {
+    display: none;
+  }
+
+  html[data-edition='dhuan'] .story-play {
+    justify-content: center;
+    align-self: stretch;
+    min-height: 44px;
+  }
+
+  /* The strip owns the top of the phone; the left stack starts under it.
+     The dock and the right rail keep upstream's modelled geometry. */
+  html[data-edition='dhuan'] #left-panel-stack {
+    top: 232px;
+  }
+
+  html[data-edition='dhuan'] #left-panel-stack > .panel-collapsible,
+  html[data-edition='dhuan'] #right-context-rail > .panel-collapsible {
+    width: 100%;
+  }
+
+  html[data-edition='dhuan'] #command-dock {
+    width: min(92vw, 360px);
+  }
+
+  /* Clear of the centred dock: the corner actions ride above it. */
+  html[data-edition='dhuan'] #corner-actions {
+    inset-inline-end: 12px;
+    inset-block-end: 72px;
+  }
+
+  html[data-edition='dhuan'] .data-toggle-btn,
+  html[data-edition='dhuan'] .data-toggle-chip,
+  html[data-edition='dhuan'] .scene-btn {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 520px) {
+  html[data-edition='dhuan'] .wordmark-en {
+    display: none;
+  }
+}

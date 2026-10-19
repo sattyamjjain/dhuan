@@ -629,7 +629,7 @@ const PUBLIC_SCENE_RECIPES = [
     title: msg('Smog Season Live'),
     durationSec: 16,
     style: 'normal',
-    ui: { hidePanels: true, hudMode: 'minimal', safeFrame: '16:9' },
+    ui: { hidePanels: true, hudMode: 'off', safeFrame: '16:9' },
     layers: {
       'local-firms': true,
       wind: {
@@ -638,9 +638,6 @@ const PUBLIC_SCENE_RECIPES = [
       },
       'air-quality': false,
       flights: false,
-      satellites: false,
-      earthquakes: false,
-      traffic: false,
     },
     post: {
       bloom: 0,

@@ -5,12 +5,15 @@ export function startApplicationChrome({
   loadingScreen,
   styleManager,
   dataManager,
+  sceneDirector,
   signal,
   initializeWelcome = initFirstRunExperience,
   initializeSettings,
+  initializeStory,
 }) {
   let disposed = false;
   let firstRun;
+  let story;
   let revealTimer;
   let resolveDelay;
   const minimumDelay = new Promise((resolve) => {
@@ -30,6 +33,9 @@ export function startApplicationChrome({
     .then(() => {
       if (disposed || signal.aborted) return;
       loadingScreen.classList.add('hidden');
+      // The strip appears with the globe, not before it: its numbers only
+      // mean something once there is a map under them.
+      story = initializeStory?.({ dataManager, sceneDirector });
       loadingScreen.addEventListener('transitionend', revealFirstRun, {
         once: true,
       });
@@ -49,6 +55,7 @@ export function startApplicationChrome({
     resolveDelay();
     loadingScreen.removeEventListener('transitionend', revealFirstRun);
     firstRun?.destroy();
+    story?.destroy();
     (await keySetup.catch(() => null))?.destroy();
   };
 }

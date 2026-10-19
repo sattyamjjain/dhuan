@@ -97,6 +97,26 @@ const PANEL_ORDER = PANEL_GROUPS.flatMap(({ label, ids }) =>
 const PANEL_POSITIONS = new Map(
   PANEL_ORDER.map(({ id }, index) => [id, index]),
 );
+/**
+ * An edition may regroup the panel around its story: its groups come first,
+ * in its order, and whatever it leaves out keeps upstream's grouping below.
+ * @param {Array<{label: string, ids: string[]}>} [groups]
+ */
+function editionPanelPresentation(groups = []) {
+  const order = (Array.isArray(groups) ? groups : []).flatMap(
+    ({ label, ids }) => (ids || []).map((id) => ({ id, label })),
+  );
+  const positions = new Map(order.map(({ id }, index) => [id, index]));
+  return {
+    position: (id) =>
+      positions.has(id)
+        ? positions.get(id)
+        : order.length + (PANEL_POSITIONS.get(id) ?? PANEL_ORDER.length),
+    groupLabel: (id) =>
+      order[positions.get(id)]?.label ??
+      PANEL_ORDER[PANEL_POSITIONS.get(id)]?.label,
+  };
+}
 
 function englishPanelLabel(layer) {
   return PANEL_LABELS[layer.id] || LAYER_NAME_KEYS[layer.id] || layer.name;
@@ -204,8 +224,13 @@ export class LayerPanel {
     subscribeRowControls,
     onHiddenRefresh = () => {},
     weatherClock,
+    edition = {},
   }) {
     this.weatherClock = weatherClock;
+    // Edition presentation: story-first grouping and one glyph family for the
+    // row icons. Plain data, so this package never imports the edition itself.
+    this._presentation = editionPanelPresentation(edition.panelGroups);
+    this._layerGlyphs = edition.layerGlyphs || {};
     this.getAll = getLayers;
     this.isEnabled = isEnabled;
     this.setEnabled = setEnabled;
@@ -286,15 +311,13 @@ export class LayerPanel {
       .slice()
       .sort(
         (a, b) =>
-          (PANEL_POSITIONS.get(a.id) ?? PANEL_ORDER.length) -
-          (PANEL_POSITIONS.get(b.id) ?? PANEL_ORDER.length),
+          this._presentation.position(a.id) - this._presentation.position(b.id),
       );
     let previousGroup = '';
     for (const layer of layers) {
       if (!layer.showInTogglePanel) continue;
       const group =
-        PANEL_ORDER[PANEL_POSITIONS.get(layer.id)]?.label ??
-        msg('Other layers');
+        this._presentation.groupLabel(layer.id) ?? msg('Other layers');
       if (group && group !== previousGroup) {
         const heading = document.createElement('h3');
         heading.className = 'data-layer-group-heading';
@@ -316,7 +339,15 @@ export class LayerPanel {
       const icon = document.createElement('span');
       icon.className = 'data-icon';
       icon.setAttribute('aria-hidden', 'true');
-      icon.textContent = layer.icon;
+      // `className`, not classList: the panel renders into fixture elements
+      // in tests that model only what the rows actually use.
+      const glyph = this._layerGlyphs[layer.id];
+      if (glyph) {
+        icon.className = 'data-icon material-symbols-outlined';
+        icon.textContent = glyph;
+      } else {
+        icon.textContent = layer.icon;
+      }
       const name = document.createElement('span');
       name.className = 'data-name';
       setRowText(name, panelLabel(layer));

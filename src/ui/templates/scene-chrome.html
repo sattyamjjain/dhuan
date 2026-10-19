@@ -7,12 +7,17 @@
     <div id="world-overlay-status" role="status" aria-live="polite" aria-atomic="true"></div>
   </div>
 
-  <!-- Title -->
+  <!-- Brand -->
   <div id="title-bar">
-    <div class="title-glow"></div>
-    <h1><span translate="no"><span lang="hi">धुआँ</span> <span class="title-accent">DHUAN</span></span></h1>
-    <p class="subtitle" data-i18n>PUNJAB'S FIRES TO DELHI'S LUNGS</p>
+    <h1>
+      <span class="wordmark" translate="no"><span class="wordmark-hi" lang="hi">धुआँ</span><span class="wordmark-en title-accent">Dhuan</span></span>
+    </h1>
+    <p class="subtitle" data-i18n>Punjab's fires to Delhi's lungs</p>
   </div>
+
+  <!-- Smog season now: live counts and the one-click story. Filled by
+       src/dhuan/storyStrip.js; stays hidden until the data manager is up. -->
+  <section id="dhuan-story" class="story-strip" aria-label="Smog season now" data-i18n-aria-label hidden></section>
 
   <!-- Style indicator -->
   <div id="style-indicator">
@@ -26,7 +31,7 @@
       <span class="material-symbols-outlined" aria-hidden="true">layers_clear</span>
     </button>
     <button id="share-btn" type="button" aria-label="Copy share link" title="Copy share link" data-i18n-aria-label data-i18n-title>
-      <span class="share-icon" aria-hidden="true">&#x1F517;</span>
+      <span class="material-symbols-outlined" aria-hidden="true">link</span>
     </button>
     <button id="tilt-map-view" type="button" aria-label="Tilt map to oblique view" aria-pressed="false" title="Toggle straight-down and tilted map views" data-i18n-aria-label data-i18n-title>
       <span class="material-symbols-outlined" aria-hidden="true">view_in_ar</span>

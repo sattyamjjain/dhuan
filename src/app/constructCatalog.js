@@ -143,7 +143,10 @@ export function createApplicationCatalog({
         ...(resolveAsset ? { resolveAsset } : {}),
       }),
       createApplicationEarthquakes({ source: sources.earthquakes }),
-      createApplicationAirQuality({ source: sources['air-quality'] }),
+      createApplicationAirQuality({
+        source: sources['air-quality'],
+        storyRegion: EDITION.story.airRegion,
+      }),
       createApplicationFirePerimeters({
         source: sources['fire-perimeters'],
       }),
@@ -197,7 +200,7 @@ export function createApplicationCatalog({
         id: 'local-firms',
         name: 'FIRMS Active Fires',
         icon: '▲',
-        source: 'NASA FIRMS · LIVE',
+        source: 'NASA FIRMS',
         feed: sources.firms,
         regions: EDITION.fireRegions,
         regionCaveat: EDITION.fireCountCaveat,

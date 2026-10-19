@@ -30,12 +30,8 @@ import { t, msg, tn, registerUnsavedWork } from './i18n/index.js';
 export function keySetupChipLabel(status) {
   const missing = Math.max(0, (status?.total || 0) - (status?.setCount || 0));
   return missing > 0
-    ? tn(
-        missing,
-        'POWER UP · {count} KEY WAITING',
-        'POWER UP · {count} KEYS WAITING',
-      )
-    : t('POWERED UP');
+    ? tn(missing, '{count} data key to add', '{count} data keys to add')
+    : t('All data keys set');
 }
 
 /**

@@ -669,8 +669,10 @@ test('public transit documentation uses courtesy attribution and the approved gr
     assert.match(row, /open realtime vehicle data/);
     assert.match(row, /published for developer use and not against their use/);
   }
+  // This fork keeps upstream's README under docs/; the edition README leads
+  // with its own data table.
   const readme = readFileSync(
-    new URL('../../README.md', import.meta.url),
+    new URL('../../docs/UPSTREAM-README.md', import.meta.url),
     'utf8',
   );
   assert.ok(

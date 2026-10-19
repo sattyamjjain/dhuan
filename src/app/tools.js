@@ -6,7 +6,12 @@ import { initImageryBoxTool } from '../ui/imageryBoxTool.js';
 import { createRecentImageryPanel } from '../ui/recentImagery.js';
 import { initGevVoiceCommands } from '../voice/gevRealtime.js';
 import { installViews, isEmbeddedInline } from './embed.js';
-import { installScopeMask, destroyScopeMask } from '../scopeMask.js';
+import {
+  installScopeMask,
+  destroyScopeMask,
+  setScopeMaskEnabled,
+} from '../scopeMask.js';
+import { EDITION } from '../edition.js';
 import {
   installRenderGovernor,
   getRenderGovernorDiagnostics,
@@ -105,7 +110,15 @@ export function createApplicationTools({
     });
   }
   if (startChrome)
-    defer(startChrome({ loadingScreen, styleManager, dataManager, signal }));
+    defer(
+      startChrome({
+        loadingScreen,
+        styleManager,
+        dataManager,
+        sceneDirector,
+        signal,
+      }),
+    );
   // Idle render governor: flips the scene into requestRenderMode whenever
   // nothing animates per frame. Installed AFTER every module above has had
   // its chance to register pre-install holds. (perf wave 2)
@@ -114,6 +127,12 @@ export function createApplicationTools({
   // Install the explicit scope mask used by the DISPLAY controls.
   installScopeMask(viewer);
   defer(() => destroyScopeMask());
+  // The edition opens without the circular scope unless a share link or the
+  // DISPLAY panel asks for it; the button mirrors the mask it controls.
+  if (EDITION.ui.scopeMask === false && !styleManager.hasShareState) {
+    setScopeMaskEnabled(false);
+    styleManager.syncScopeControl?.();
+  }
 
   // The follow camera recomputes the tracked target's dead-reckon position
   // every frame — tracking anything is a per-frame animation. (perf wave 2)

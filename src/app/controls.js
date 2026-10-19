@@ -24,6 +24,8 @@ export function createApplicationControls({
       fetchRegionalBrief: (...args) =>
         operations.requests.regional.getBrief(...args),
       ...catalogControlServices(catalog),
+      // First-load visual baseline the edition sets (see EDITION.ui).
+      editionVisualDefaults: { hudVisible: EDITION.ui.tacticalHud !== false },
     },
     requestServices: operations.requests,
     mapStackController,

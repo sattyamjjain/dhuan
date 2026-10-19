@@ -44,6 +44,20 @@ provider registration rejects compositions that cannot fit rather than truncatin
 identities. A malformed or duplicate entry invalidates the complete custom-switch
 field. Existing whole-link size limits still apply.
 
+## Dhuan chrome — October 19, 2026
+
+The edition opens without the classification HUD, the scope mask, the sensor
+presets and the voice dock; DISPLAY and share links can still bring the HUD and
+scope back. Under the wordmark a story strip (`src/dhuan/storyStrip.js`) shows
+the Punjab + Haryana fire count, Delhi NCR's worst CPCB station with its band in
+words, the time the numbers were taken, and a button that plays Smog Season Live
+once (`startScene(id, { single: true })`). The Layers panel opens by default and
+groups story-first from `EDITION.panelGroups`, with Material glyphs from
+`EDITION.layerGlyphs` handed to `LayerPanel` as options. The theme is one sheet,
+`src/ui/styles/dhuan.css`, scoped to `html[data-edition="dhuan"]`; dock and
+right-rail geometry stay on upstream's rules so the credit-attribution model
+still holds.
+
 ## God's Eye View in conversations — October 2, 2026
 
 Tool answers that can be shown in God's Eye View include a view: camera, layers,

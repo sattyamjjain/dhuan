@@ -169,6 +169,7 @@ export class StyleManager extends ShellFacade {
       viewer,
       mapStackController,
       services: {
+        editionVisualDefaults: services.editionVisualDefaults,
         setScopeTerminusOverride: services.setScopeTerminusOverride,
         clampScopeTerminusPct: services.clampScopeTerminusPct,
         getDetectionMode: services.getDetectionMode,
@@ -703,6 +704,11 @@ export class StyleManager extends ShellFacade {
     return this._visualSettings._setBloomIntensity(...arguments);
   }
 
+  /** Mirror the scope mask's live state onto its DISPLAY button. */
+  syncScopeControl() {
+    return this._visualSettings.syncScopeControl();
+  }
+
   /**
    * Wires up all primary UI event listeners: style buttons, keyboard shortcuts
    * (1-8 style keys, H/O/V/F/D/C hotkeys, Escape), AI prompt input with
@@ -825,7 +831,7 @@ export class StyleManager extends ShellFacade {
     );
     this._setHeaderText(
       document.querySelector('#location-bar .location-toolbar-label'),
-      t('LOCATION'),
+      t('Search a place'),
     );
     // One span holds both mode descriptions around a <br>; keep the <br>.
     const standbyDescription = document.querySelector(

@@ -259,6 +259,14 @@ export class VisualSettings {
     return this._visualEffects.sharpenEnabled;
   }
 
+  /** Mirror the scope mask's live state onto its DISPLAY button. */
+  syncScopeControl() {
+    const { isScopeMaskEnabled } = this.services;
+    const enabled = isScopeMaskEnabled();
+    this._scopeBtn?.classList.toggle('active', enabled);
+    this._scopeBtn?.setAttribute('aria-pressed', String(enabled));
+  }
+
   _initStages() {
     this._visualEffects.initStyles();
   }
@@ -789,7 +797,13 @@ export class VisualSettings {
   }
 
   _applyGlobalPostDefaults() {
-    const defaults = GLOBAL_POST_DEFAULTS;
+    // The host may override the first-load baseline (the Dhuan edition opens
+    // without the classification HUD); the military presets still bring the
+    // HUD with them when selected.
+    const defaults = {
+      ...GLOBAL_POST_DEFAULTS,
+      ...(this.services.editionVisualDefaults || {}),
+    };
     if (typeof defaults.bloom?.intensity === 'number' && this._bloomSlider) {
       this._setBloomIntensity(clampBloomIntensity(defaults.bloom.intensity), {
         syncShare: false,

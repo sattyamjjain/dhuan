@@ -11,7 +11,6 @@
  * so a fork that empties this file is upstream again.
  */
 import { msg } from './i18n/marker.js';
-import { EDITION_AIR_QUALITY_PROVIDER_ID } from './sources/airQualityProvider.js';
 
 export const EDITION = Object.freeze({
   id: 'dhuan',
@@ -21,26 +20,123 @@ export const EDITION = Object.freeze({
   /**
    * The air-quality provider this build selects by default. `eccc` is
    * upstream's; `VITE_AIR_QUALITY_PROVIDER` in .env overrides either way.
-   * The constant lives with the reference sources (a portable package) and
-   * is mirrored here so the policy still reads from one place.
+   * The reference sources (a portable package that cannot import this file)
+   * carry the same literal as EDITION_AIR_QUALITY_PROVIDER_ID; a test keeps
+   * the two in step.
    */
-  airQualityProviderId: EDITION_AIR_QUALITY_PROVIDER_ID,
+  airQualityProviderId: 'cpcb',
 
   /**
    * Layers this edition never shows or enables: they stay registered (the
    * share-link token ledger and the control surface need the instances) but
    * are hidden from the panel, refused by the manager, and skipped by voice.
-   *
-   * No cameras in India (public CCTV and ALPR). No military or "vital
-   * installation" layers (Official Secrets Act, 1923).
    */
   excludedLayerIds: Object.freeze([
+    // No cameras in India (public CCTV and ALPR). No military or "vital
+    // installation" layers (Official Secrets Act, 1923).
     'military',
     'military-awareness',
     'military-installations',
     'cctv',
     'alpr-cameras',
+    // Off the story. Each stays registered and reachable upstream; this
+    // edition's panel shows the fires, the air, the weather that moves the
+    // smoke, the quakes and the flights the smog grounds.
+    'ais-live-vessels',
+    'bhote-koshi-2026',
+    'bhote-koshi-locator',
+    'bikeshare',
+    'directions',
+    'fire-perimeters',
+    'gnss-integrity',
+    'local-adsb',
+    'local-dams',
+    'local-datacenters',
+    'radio',
+    'rocket-launches',
+    'satellites',
+    'street-level',
+    'telegeography-submarine-cables',
+    'traffic',
+    'transit',
   ]),
+
+  /**
+   * How the Layers panel groups what is left: the story first, then the
+   * weather that moves the smoke, then everything else that is live.
+   */
+  panelGroups: Object.freeze([
+    Object.freeze({
+      label: msg('Smog season'),
+      ids: Object.freeze(['local-firms', 'air-quality', 'wind']),
+    }),
+    Object.freeze({
+      label: msg('Weather'),
+      ids: Object.freeze([
+        'weather-satellite',
+        'weather-radar',
+        'weather-lightning',
+        'weather-cyclones',
+      ]),
+    }),
+    Object.freeze({
+      label: msg('Also live'),
+      ids: Object.freeze(['earthquakes', 'flights', 'recent-imagery']),
+    }),
+  ]),
+
+  /** Material Symbols glyphs for the panel rows (see index.html's subset). */
+  layerGlyphs: Object.freeze({
+    'local-firms': 'local_fire_department',
+    'air-quality': 'masks',
+    wind: 'air',
+    'weather-satellite': 'cloud',
+    'weather-radar': 'rainy',
+    'weather-lightning': 'thunderstorm',
+    'weather-cyclones': 'cyclone',
+    earthquakes: 'landslide',
+    flights: 'flight',
+    'recent-imagery': 'satellite_alt',
+  }),
+
+  /**
+   * Chrome policy. Upstream's tactical dressing (the classification HUD, the
+   * circular scope mask, the sensor presets, the voice dock) is off here: a
+   * public-health story reads better as a calm briefing than a spy feed.
+   * The DISPLAY panel can still turn the HUD and scope back on by hand.
+   */
+  ui: Object.freeze({
+    scopeMask: false,
+    tacticalHud: false,
+  }),
+
+  /** The first-run dialog's one persuasive line and its primary mission. */
+  firstRun: Object.freeze({
+    description: msg(
+      'Stubble fires in Punjab, the wind that carries the smoke, and the air Delhi breathes. Every number comes from a public feed.',
+    ),
+    missionLayerIds: Object.freeze(['local-firms', 'air-quality', 'wind']),
+  }),
+
+  /**
+   * The story strip under the wordmark: the fire count, the city's air, and
+   * the scene the Play button starts. The air region is a bounding box over
+   * Delhi NCR (Gurugram to Ghaziabad, Faridabad to Sonipat's edge).
+   */
+  story: Object.freeze({
+    sceneId: 'smog-season-live',
+    fireRegionId: 'punjab-haryana',
+    airRegion: Object.freeze({
+      id: 'delhi-ncr',
+      label: msg('Delhi NCR'),
+      bbox: Object.freeze({
+        west: 76.75,
+        south: 28.25,
+        east: 77.65,
+        north: 28.95,
+      }),
+    }),
+  }),
 
   /**
    * The startup view when no share link restores one: Punjab's stubble belt

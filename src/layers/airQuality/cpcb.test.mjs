@@ -389,3 +389,44 @@ test('with its other rows a live station reads its worst sub-index and names it'
   assert.equal(reading.lat, 25.265194);
   assert.equal(reading.observedMs, Date.UTC(2026, 9, 18, 14, 30));
 });
+
+test('the region summary counts stations in the box, names the worst and the top two bands', async () => {
+  const { summarizeAirQualityRegion } = await import('./model.js');
+  const region = {
+    id: 'delhi-ncr',
+    label: 'Delhi NCR',
+    bbox: { west: 76.75, south: 28.25, east: 77.65, north: 28.95 },
+  };
+  const station = (name, lat, lon, value, band) => ({
+    name,
+    lat,
+    lon,
+    value,
+    band,
+    label: String(value),
+    bandLabel: band,
+    color: '#000000',
+    observedMs: 1,
+  });
+  const readings = [
+    station('ITO', 28.63, 77.24, 425, 'severe'),
+    station('Loni', 28.75, 77.28, 269, 'poor'),
+    station('Anand Vihar', 28.65, 77.32, 310, 'very-poor'),
+    station('Ludhiana', 30.9, 75.85, 180, 'moderate'),
+    station('Unknown band', 28.6, 77.2, null, null),
+  ];
+  const summary = summarizeAirQualityRegion(readings, region, 'cpcb');
+  assert.equal(summary.count, 4, 'four stations inside the box');
+  assert.equal(summary.alertCount, 2, 'Severe and Very Poor');
+  assert.equal(summary.worst.name, 'ITO');
+  assert.equal(summary.worst.value, 425);
+  assert.equal(summary.worst.bandLabel, 'severe');
+  assert.deepEqual(summarizeAirQualityRegion([], region, 'cpcb'), {
+    id: 'delhi-ncr',
+    label: 'Delhi NCR',
+    count: 0,
+    alertCount: 0,
+    worst: null,
+  });
+  assert.equal(summarizeAirQualityRegion(readings, null, 'cpcb'), null);
+});

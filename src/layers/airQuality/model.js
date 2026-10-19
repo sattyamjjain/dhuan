@@ -767,3 +767,55 @@ export function mapAnalystRecord(raw, index = 0) {
     observedMs: num(raw?.observedMs),
   };
 }
+
+/**
+ * The strip's one-line read of a city: how many stations sit inside the
+ * region's box, the worst of them, and how many are in the top two bands.
+ * Band severity is the provider's band order, so the helper never names a
+ * band id and works for every registered scale.
+ *
+ * @param {Array<object>} readings - Normalised readings (any provider).
+ * @param {{id: string, label: string, bbox: {west: number, south: number, east: number, north: number}}} region
+ * @param {string} providerId
+ * @returns {{id: string, label: string, count: number, alertCount: number, worst: object|null}|null}
+ */
+export function summarizeAirQualityRegion(readings, region, providerId) {
+  const bbox = region?.bbox;
+  if (!bbox || !Array.isArray(readings)) return null;
+  const { west, south, east, north } = bbox;
+  const bands = providerBands(providerId);
+  const rank = new Map(bands.map((band, index) => [band.id, index]));
+  const alertFloor = Math.max(0, bands.length - 2);
+  let count = 0;
+  let alertCount = 0;
+  let worst = null;
+  for (const reading of readings) {
+    const { lat, lon } = reading;
+    if (!(lat >= south && lat <= north && lon >= west && lon <= east)) continue;
+    count += 1;
+    const index = rank.get(reading.band) ?? -1;
+    if (index >= alertFloor) alertCount += 1;
+    if (
+      Number.isFinite(reading.value) &&
+      (!worst || reading.value > worst.value)
+    )
+      worst = reading;
+  }
+  return {
+    id: region.id,
+    label: region.label,
+    count,
+    alertCount,
+    worst: worst
+      ? {
+          name: worst.name,
+          value: worst.value,
+          label: worst.label,
+          band: worst.band,
+          bandLabel: worst.bandLabel,
+          color: worst.color,
+          observedMs: worst.observedMs,
+        }
+      : null,
+  };
+}

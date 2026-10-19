@@ -22,6 +22,7 @@ import { createSurfaceKeyboard } from './ui/surfaceKeyboard.js';
 // is enthusiasm, not "never show me this again".
 
 import { t, msg } from './i18n/index.js';
+import { EDITION } from './edition.js';
 
 /** Durable suppression. Written ONLY by the "Don't show this again" checkbox. */
 export const FIRST_RUN_STORAGE_KEY = 'gev:first-run-mission:v1';
@@ -122,6 +123,15 @@ export const FIRST_RUN_MISSIONS = Object.freeze({
     busyKey: msg('Scanning active events…'),
   }),
   explore: Object.freeze({ kind: 'none' }),
+  // This edition's tile: the fires, the air and the wind that connects them.
+  // `keepCamera` leaves the startup view over Punjab instead of pulling out to
+  // the globe, so the first thing a visitor sees is the story, not the planet.
+  smog: Object.freeze({
+    kind: 'globe',
+    layerIds: EDITION.firstRun.missionLayerIds,
+    keepCamera: true,
+    busyKey: msg('Starting the smog season view…'),
+  }),
 });
 
 /*
@@ -281,9 +291,11 @@ export async function runFirstRunChoice(
   // Globe missions: start the pull-out and the layer work together so the
   // camera is already moving while the feeds spin up. The flight is framing,
   // not the mission — a stalled or superseded flight never fails the tile.
-  const flight = Promise.resolve()
-    .then(() => flyToGlobe())
-    .catch(() => null);
+  const flight = mission.keepCamera
+    ? Promise.resolve(null)
+    : Promise.resolve()
+        .then(() => flyToGlobe())
+        .catch(() => null);
   const outcomes = await Promise.all(
     mission.layerIds.map(async (layerId) => {
       try {
@@ -374,10 +386,7 @@ export function initFirstRunExperience({
       'Live earthquakes and active fires, from USGS and NASA',
     );
   const description = root.querySelector('#first-run-description');
-  if (description)
-    description.textContent = t(
-      'It feels like a forbidden cockpit—then you realize the sources are public and the data is real.',
-    );
+  if (description) description.textContent = t(EDITION.firstRun.description);
 
   const status = root.querySelector('[data-first-run-status]');
   const suppressBox = root.querySelector('[data-first-run-suppress]');

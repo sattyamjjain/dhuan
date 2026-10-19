@@ -8,9 +8,9 @@
 
 Built on [God's Eye View](https://github.com/bilawalsidhu/gods-eye-view). The data is real.
 
-![Smog Season Live: NASA fire detections over Punjab, the GFS wind, and CPCB stations over Delhi](docs/media/dhuan-smog-season.gif)
+![Dhuan over Delhi: the story strip with 539 active fires over Punjab + Haryana and Delhi NCR's worst station at 269 (Poor), the Layers panel, CPCB stations on the globe and the Air quality card with the six NAQI bands](docs/media/dhuan-home.png)
 
-_Clip placeholder until the first recording lands (Day 3 of the launch plan). Numbers on screen are dated; the one in the HUD is a floor, not a tally._
+_Screenshot from 19 Oct 2026, 17:59 IST. The 15-second clip lands on Day 3 of the launch plan. Numbers on screen are dated; the fire count is a floor, not a tally._
 
 </div>
 
@@ -21,7 +21,7 @@ _Clip placeholder until the first recording lands (Day 3 of the launch plan). Nu
 fields to the city:
 
 1. **NASA FIRMS** active-fire detections (VIIRS NOAA-20/21, Suomi-NPP and MODIS), with a live
-   count for a Punjab + Haryana bounding box on the fire row and the HUD.
+   count for a Punjab + Haryana bounding box on the fire row and in the story strip.
 2. **NOAA GFS** 10 m wind, animated. No key.
 3. **CPCB** hourly air-quality stations across India via data.gov.in, in the six Indian
    NAQI bands and CPCB's own colours. A second provider for the upstream Air quality layer,
@@ -29,8 +29,38 @@ fields to the city:
 
 It opens over Punjab at dusk, looking down the wind toward Delhi. A built-in Director scene,
 **Smog Season Live**, plays the fires, the wind, then the Delhi NCR stations in about fifteen
-seconds. Everything else in God's Eye View — flights, ships, satellites, earthquakes, weather
-radar, the voice agent — still works.
+seconds; the **Play** button under the wordmark runs it once. Flights, earthquakes and the
+weather layers stay in the panel; the rest of God's Eye View (ships, satellites, transit,
+the voice agent, the tactical HUD and the scope) is still in the code and one setting away.
+
+### The interface
+
+A calm briefing over a living globe, not a spy feed. The chrome is charcoal with one ember
+accent; the data keeps its own colours.
+
+- **Story strip** (top left): the Punjab + Haryana fire count for the last 24 h, Delhi NCR's
+  worst station with its NAQI band in words, the time the numbers were taken, and the Play
+  button. A stat whose layer is off becomes the switch that turns it on.
+- **Layers** (left, open by default): Smog season first (Active fires, Air quality, Wind),
+  then Weather, then Also live (earthquakes, flights, recent imagery). Each row shows its
+  source and age; the pill is the state in words.
+- **Air quality card** (right): the five worst stations, the dominant pollutant, and the
+  six-band legend with ranges.
+- **Welcome**: "Smog season live" turns on the three story layers and keeps the camera over
+  Punjab; "Explore the map" starts clean.
+- **Keys**: the bottom-right chip counts the data keys still to add and opens the setup
+  dialog. Language picker beside it.
+
+Everything is keyboard-reachable, every control has a visible focus ring, no state is colour
+only, and `prefers-reduced-motion` turns the remaining animation off. The theme lives in one
+sheet, `src/ui/styles/dhuan.css`, scoped to `html[data-edition="dhuan"]`; upstream's
+stylesheets are untouched.
+
+<div align="center">
+
+![Welcome dialog: Watch India's smog season as it happens, with the Smog season live and Explore the map choices](docs/media/dhuan-welcome.png)
+
+</div>
 
 ## Quick start
 
@@ -41,7 +71,7 @@ git clone https://github.com/sattyamjjain/dhuan.git && cd dhuan
 npm ci && npm run doctor && npm run dev
 ```
 
-Open http://localhost:4173. Then, in the app, open **POWER UP** (bottom-right) and paste:
+Open http://localhost:4173. Then, in the app, open **Data keys** (bottom-right) and paste:
 
 | Key             | Unlocks                                     | Get it                                                                      |
 | --------------- | ------------------------------------------- | --------------------------------------------------------------------------- |
@@ -89,7 +119,7 @@ Accessibility notes: the six NAQI colours are CPCB's bulletin palette and are ne
 cue. The legend pairs each swatch with its name and range, the readout list says the band in
 words, and every station circle sits on a light ring so a dark band still reads over dark
 terrain. On the map the Severe maroon is lightened to `#e0201c` for contrast; the legend keeps
-`#c00000`. The HUD typewriter and the loader pulse respect `prefers-reduced-motion`.
+`#c00000`. The loader bar and the panel transitions respect `prefers-reduced-motion`.
 
 The five excluded layers stay registered in the code (the share-link token ledger and the
 control surface expect them) but are hidden from the Layers panel, skipped by the voice
@@ -107,7 +137,10 @@ policy lives in one file, `src/edition.js`; emptying it gives you upstream back.
   `createCpcbAirQualitySource` polls the proxy and keeps its last good snapshot through an
   empty hour. The layer takes everything else from the source it is given.
 - `src/edition.js` — the Punjab home view, the fire region box, the excluded layer ids, the
-  default provider, the caveat string.
+  default provider, the caveat string, the panel grouping and glyphs, the welcome mission,
+  the Delhi NCR box the story strip reads, and the chrome policy (no HUD, no scope by default).
+- `src/dhuan/storyStrip.js` and `src/ui/styles/dhuan.css` — the story strip and the edition
+  theme. The strip reads the layer stats the panel already shows; nothing in it fetches.
 - `src/data/fireRegions.js`, `src/hudFireCounter.js` — the regional count, pure and tested.
 - `src/scenes/recipes.js` and `scenes/smog-season-live.json` — the launch scene, as a built-in
   recipe and as a version-5 scene document.

@@ -83,14 +83,15 @@ export function initStoryStrip({
   };
 
   root.textContent = '';
-  const list = make('ul', 'story-stats', root);
+  const list = make('dl', 'story-stats', root);
   const buildStat = (key, iconName) => {
-    const item = make('li', `story-stat story-stat-${key}`, list);
+    const item = make('div', `story-stat story-stat-${key}`, list);
     item.dataset.stat = key;
     icon(iconName, item);
     const body = make('div', 'story-body', item);
-    const value = make('span', 'story-value', body);
-    const label = make('span', 'story-label', body);
+    // <dt> before <dd> for the reader; the sheet shows the number first.
+    const label = make('dt', 'story-label', body);
+    const value = make('dd', 'story-value', body);
     return { item, value, label };
   };
   const fires = buildStat('fires', 'local_fire_department');
@@ -108,6 +109,26 @@ export function initStoryStrip({
   let timer = null;
   let running = false;
 
+  /** A dash or an ellipsis in the value slot is decoration, not a reading. */
+  const placeholder = (stat, glyph) => {
+    stat.value.textContent = '';
+    const mark = make('span', 'story-placeholder', stat.value);
+    mark.setAttribute('aria-hidden', 'true');
+    mark.textContent = glyph;
+  };
+
+  /** Live text that only changes when its words do, so nothing re-announces. */
+  const setMeta = (text) => {
+    if (meta.textContent !== text) meta.textContent = text;
+  };
+
+  /** Keyboard focus must survive a repaint that removes the focused control. */
+  const restoreFocus = (stat) => {
+    const target = play.hidden ? stat.item : play;
+    if (target === stat.item) stat.item.tabIndex = -1;
+    target.focus?.();
+  };
+
   const layerById = (id) =>
     dataManager.getAll().find((layer) => layer.id === id) || null;
 
@@ -118,13 +139,25 @@ export function initStoryStrip({
     button.type = 'button';
     button.textContent = text;
     button.addEventListener('click', async () => {
-      button.disabled = true;
+      if (button.getAttribute('aria-disabled') === 'true') return;
+      // aria-disabled, not `disabled`: a native disabled control evicts the
+      // keyboard focus that is about to need a new home.
+      button.setAttribute('aria-disabled', 'true');
+      button.setAttribute('aria-busy', 'true');
+      const hadFocus = documentRef.activeElement === button;
       try {
         await dataManager.setEnabled(layerId, true, { origin: 'user' });
       } catch {
         /* the layer row reports its own failure */
       } finally {
-        if (!destroyed) refresh();
+        if (!destroyed) {
+          refresh();
+          if (hadFocus && !button.isConnected) restoreFocus(stat);
+          else {
+            button.removeAttribute('aria-disabled');
+            button.removeAttribute('aria-busy');
+          }
+        }
       }
     });
   };
@@ -142,19 +175,19 @@ export function initStoryStrip({
     }
     fires.item.hidden = false;
     if (!layer.enabled) {
-      fires.value.textContent = '—';
+      placeholder(fires, '—');
       fires.item.dataset.state = 'off';
       offerEnable(fires, FIRE_LAYER_ID, t('Turn on active fires'));
       return null;
     }
     if (stats.keyRequired) {
-      fires.value.textContent = '—';
+      placeholder(fires, '—');
       fires.item.dataset.state = 'key';
       fires.label.textContent = t('Active fires need a NASA FIRMS key');
       return null;
     }
     if (!region || !stats.lastUpdate) {
-      fires.value.textContent = '…';
+      placeholder(fires, '…');
       fires.item.dataset.state = 'loading';
       fires.label.textContent = t('Counting fires over Punjab and Haryana');
       return null;
@@ -181,26 +214,26 @@ export function initStoryStrip({
     }
     air.item.hidden = false;
     if (!layer.enabled) {
-      air.value.textContent = '—';
+      placeholder(air, '—');
       air.item.dataset.state = 'off';
       offerEnable(air, AIR_LAYER_ID, t('Turn on air quality'));
       return null;
     }
     if (stats.keyRequired) {
-      air.value.textContent = '—';
+      placeholder(air, '—');
       air.item.dataset.state = 'key';
       air.label.textContent = t('Air quality needs a data.gov.in key');
       return null;
     }
     if (!summary || !stats.lastUpdate) {
-      air.value.textContent = '…';
+      placeholder(air, '…');
       air.item.dataset.state = 'loading';
       air.label.textContent = t('Reading CPCB stations');
       return null;
     }
     const regionLabel = t(summary.label);
     if (!summary.worst) {
-      air.value.textContent = '—';
+      placeholder(air, '—');
       air.item.dataset.state = 'empty';
       air.label.textContent = t('{region} · no station reporting', {
         region: regionLabel,
@@ -237,13 +270,15 @@ export function initStoryStrip({
   const paintMeta = (times) => {
     const stamps = times.filter((value) => Number.isFinite(value) && value > 0);
     if (!stamps.length) {
-      meta.textContent = t('Sources: NASA FIRMS · CPCB via data.gov.in');
+      setMeta(t('Sources: NASA FIRMS · CPCB via data.gov.in'));
       return;
     }
     const newest = Math.max(...stamps);
-    meta.textContent = t('Updated {time} IST · NASA FIRMS · CPCB', {
-      time: timeFormat.format(new Date(newest)),
-    });
+    setMeta(
+      t('Updated {time} IST · NASA FIRMS · CPCB', {
+        time: timeFormat.format(new Date(newest)),
+      }),
+    );
   };
 
   const paintPlay = () => {
@@ -252,7 +287,7 @@ export function initStoryStrip({
     if (!available) return;
     playIcon.textContent = running ? 'close' : 'play_arrow';
     playText.textContent = t(running ? STOP_LABEL : PLAY_LABEL);
-    play.setAttribute('aria-pressed', String(running));
+    play.dataset.running = String(running);
   };
 
   const refresh = () => {
@@ -264,8 +299,8 @@ export function initStoryStrip({
   };
 
   play.addEventListener('click', async () => {
-    if (!sceneDirector) return;
-    play.disabled = true;
+    if (!sceneDirector || play.getAttribute('aria-disabled') === 'true') return;
+    play.setAttribute('aria-disabled', 'true');
     try {
       if (running) {
         await sceneDirector.stopScene?.(msg('Stopped'));
@@ -274,8 +309,10 @@ export function initStoryStrip({
           single: true,
         });
         if (outcome && outcome.started === false && !destroyed) {
-          meta.textContent = t(
-            'The story scene is missing. Import scenes/smog-season-live.json from the Scenes panel.',
+          setMeta(
+            t(
+              'The story scene is missing. Import scenes/smog-season-live.json from the Scenes panel.',
+            ),
           );
         }
       }
@@ -283,7 +320,7 @@ export function initStoryStrip({
       /* the scene panel reports its own failure */
     } finally {
       if (!destroyed) {
-        play.disabled = false;
+        play.removeAttribute('aria-disabled');
         paintPlay();
       }
     }

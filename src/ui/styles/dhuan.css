@@ -79,11 +79,17 @@ html[data-edition='dhuan'] #title-bar {
   left: 24px;
 }
 
+html[data-edition='dhuan'] #title-bar h1,
+html[data-edition='dhuan'] #title-bar .subtitle {
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.75),
+    0 0 14px rgba(0, 0, 0, 0.55);
+}
+
 html[data-edition='dhuan'] #title-bar h1 {
   gap: 0;
   font-family: var(--font-sans);
   letter-spacing: 0;
-  text-shadow: none;
   line-height: 1;
 }
 
@@ -187,6 +193,17 @@ html[data-edition='dhuan'] .story-body {
   min-width: 0;
 }
 
+/* <dt> precedes <dd> in the markup; the number leads on screen. */
+html[data-edition='dhuan'] .story-value {
+  order: 1;
+  margin: 0;
+}
+
+html[data-edition='dhuan'] .story-label {
+  order: 2;
+  margin: 0;
+}
+
 html[data-edition='dhuan'] .story-value {
   display: flex;
   align-items: baseline;
@@ -280,10 +297,28 @@ html[data-edition='dhuan'] .story-play:active {
   transform: translateY(1px);
 }
 
-html[data-edition='dhuan'] .story-play[aria-pressed='true'] {
+html[data-edition='dhuan'] .story-play[data-running='true'] {
   color: var(--text-primary);
   background: var(--dh-surface-2);
   border-color: var(--glass-border-hover);
+}
+
+html[data-edition='dhuan'] .story-play[aria-disabled='true'],
+html[data-edition='dhuan'] .story-enable[aria-disabled='true'] {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+/* Controls with the globe behind them get a dark halo under the white ring. */
+html[data-edition='dhuan'] .story-play:focus-visible,
+html[data-edition='dhuan'] .story-enable:focus-visible,
+html[data-edition='dhuan'] .story-stat:focus-visible,
+html[data-edition='dhuan'] #top-center-actions button:focus-visible,
+html[data-edition='dhuan'] #key-setup-chip:focus-visible,
+html[data-edition='dhuan'] .locale-picker-button:focus-visible {
+  box-shadow:
+    0 0 0 5px rgba(11, 14, 19, 0.9),
+    var(--dh-shadow);
 }
 
 html[data-edition='dhuan'] .story-play .story-icon {
@@ -546,7 +581,7 @@ html[data-edition='dhuan'] .data-toggle-chip.active,
 html[data-edition='dhuan'] .data-toggle-chip[aria-pressed='true'],
 html[data-edition='dhuan'] .rail-card-chips button.active,
 html[data-edition='dhuan'] .rail-card-chips button[aria-pressed='true'] {
-  color: var(--accent);
+  color: #ffc294;
   background: var(--accent-dim);
   border-color: rgba(255, 138, 60, 0.45);
 }
@@ -572,6 +607,8 @@ html[data-edition='dhuan'] .data-toggle-legend-swatch {
 
 /* Layer glyphs: the edition hands the panel one Material glyph per row. */
 html[data-edition='dhuan'] .data-icon.material-symbols-outlined {
+  overflow: hidden;
+  white-space: nowrap;
   font-size: 16px;
   font-variation-settings:
     'FILL' 0,
@@ -641,7 +678,7 @@ html[data-edition='dhuan'] .scene-btn-danger {
 
 html[data-edition='dhuan'] .pp-toggle-btn.active,
 html[data-edition='dhuan'] .pp-mode-btn.active {
-  color: var(--accent);
+  color: #ffc294;
   background: var(--accent-dim);
   border-color: rgba(255, 138, 60, 0.45);
   box-shadow: none;
@@ -1048,6 +1085,17 @@ html[data-edition='dhuan'] #global-loading-label {
 
 /* ── Motion ────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
+  /* Upstream sheets animate scanlines, sonar rings and cockpit chrome; the
+     edition collapses every CSS animation and transition to a single frame. */
+  html[data-edition='dhuan'] *,
+  html[data-edition='dhuan'] *::before,
+  html[data-edition='dhuan'] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
   html[data-edition='dhuan'] .loader-bar span {
     width: 100%;
     animation: none;

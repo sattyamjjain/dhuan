@@ -810,6 +810,11 @@ html[data-edition='dhuan'] #command-dock {
   --dock-location-open: var(--dh-dock-width);
   --dock-presets-open: var(--dh-dock-width);
   --dock-side-compact: var(--dh-dock-width);
+  /* The compact sheet turns the dock into a flex row; under flex the search
+     bar keeps its intrinsic width and pushes the Map button off a phone
+     screen. The grid gives the search the remainder and the Map button its
+     own column at every width. */
+  display: grid;
   grid-template-areas: 'locations presets';
   grid-template-columns: minmax(220px, 1fr) auto;
   width: var(--dh-dock-width);
@@ -939,6 +944,10 @@ html[data-edition='dhuan'] #command-dock .map-stack-chip.active {
   background: var(--accent-dim);
   border-color: rgba(255, 138, 60, 0.45);
   box-shadow: none;
+}
+
+html[data-edition='dhuan'] #command-dock .map-stack-chip-label {
+  overflow-wrap: anywhere;
 }
 
 html[data-edition='dhuan'] #command-dock .map-stack-chip-req {
@@ -1445,9 +1454,12 @@ html[data-edition='dhuan'] #global-loading-label {
   }
 
   /* The Map tray hangs off the Map button's right edge on desktop; on a
-     phone that runs it off screen. Let the dock be its containing block so
-     it spans the dock, two pills to a row. */
-  html[data-edition='dhuan'] #command-dock > #control-panel {
+     phone that runs it off screen. Let the dock be its containing block
+     (both the panel and its inner wrapper are positioned upstream) so it
+     spans the dock, two pills to a row at a 44px touch height. */
+  html[data-edition='dhuan'] #command-dock > #control-panel,
+  html[data-edition='dhuan'] #command-dock > #control-panel > .panel-inner,
+  html[data-edition='dhuan'] #command-dock #control-panel.collapsed .panel-inner {
     position: static;
   }
 
@@ -1469,7 +1481,8 @@ html[data-edition='dhuan'] #global-loading-label {
 
   html[data-edition='dhuan'] .data-toggle-btn,
   html[data-edition='dhuan'] .data-toggle-chip,
-  html[data-edition='dhuan'] .scene-btn {
+  html[data-edition='dhuan'] .scene-btn,
+  html[data-edition='dhuan'] #command-dock .map-stack-chip {
     min-height: 44px;
   }
 }

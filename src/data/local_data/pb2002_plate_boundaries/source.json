@@ -1,0 +1,18 @@
+{
+  "id": "pb2002-plate-boundaries",
+  "name": "PB2002 plate boundaries (Bird 2003) via fraxen/tectonicplates",
+  "category": "reference",
+  "description": "Oceanic plate boundary steps from the PB2002 model, merged into segments per boundary and class.",
+  "downloaded_at": "2026-11-08",
+  "license_note": "ODC-By 1.0 (https://opendatacommons.org/licenses/by/1.0/). Credit Peter Bird (2003); Hugo Ahlenius, Nordpil.",
+  "source_sha256": "528fdeb1d57eb3d4c6e730951eabc6fd7da9dbc5fc7038b9f19100c52b986c9a",
+  "files": [
+    {
+      "path": "plate-boundaries.json",
+      "url": "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_steps.json",
+      "format": "JSON (custom compact schema, see README.md)",
+      "feature_count": 1270,
+      "sha256": "091f67b4235c957ea0a6677a63fe5ad9a8e020f173b59a09e5b7fa80ab2d2398"
+    }
+  ]
+}

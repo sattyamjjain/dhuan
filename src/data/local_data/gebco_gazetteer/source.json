@@ -1,0 +1,22 @@
+{
+  "id": "gebco-gazetteer",
+  "name": "IHO-IOC GEBCO Gazetteer of Undersea Feature Names",
+  "category": "reference",
+  "description": "Names, generic types and positions of undersea features from the GEBCO Gazetteer, fetched from the NOAA NCEI hosted FeatureServer and reduced to anchors plus simplified outlines.",
+  "downloaded_at": "2026-11-08",
+  "license_note": "Cite as \"IHO-IOC GEBCO Gazetteer of Undersea Feature Names, www.gebco.net\". Published free of charge by IHO DCDB / NOAA NCEI; terms at https://www.gebco.net/data-products/undersea-feature-names.",
+  "files": [
+    {
+      "path": "seafloor-features.json",
+      "url": "https://services2.arcgis.com/C8EMgrsFcRFL6LrL/arcgis/rest/services/Undersea_Features/FeatureServer",
+      "layer_urls": [
+        "https://services2.arcgis.com/C8EMgrsFcRFL6LrL/arcgis/rest/services/Undersea_Features/FeatureServer/0/query",
+        "https://services2.arcgis.com/C8EMgrsFcRFL6LrL/arcgis/rest/services/Undersea_Features/FeatureServer/1/query",
+        "https://services2.arcgis.com/C8EMgrsFcRFL6LrL/arcgis/rest/services/Undersea_Features/FeatureServer/2/query"
+      ],
+      "format": "JSON (custom compact schema, see README.md)",
+      "feature_count": 5410,
+      "sha256": "27d2f1526cdc07e7f90f5303c8c1ea601578aff0f078f740f04e3eb353b0539c"
+    }
+  ]
+}

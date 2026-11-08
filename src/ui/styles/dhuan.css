@@ -61,8 +61,9 @@ html[data-edition='dhuan'] #style-indicator,
 html[data-edition='dhuan'] .panel-glow,
 html[data-edition='dhuan'] .first-run-scanline,
 html[data-edition='dhuan'] .key-setup-scanline,
-html[data-edition='dhuan'] #command-dock > #control-panel,
 html[data-edition='dhuan'] #command-dock > #gev-voice-control,
+html[data-edition='dhuan'] #command-dock #style-buttons,
+html[data-edition='dhuan'] #command-dock #style-mini-status,
 html[data-edition='dhuan'] #global-context-panel,
 html[data-edition='dhuan'] #radio-panel,
 html[data-edition='dhuan'] #cctv-panel,
@@ -72,6 +73,15 @@ html[data-edition='dhuan'] #hud-layout-row,
 html[data-edition='dhuan'] #intel-hud,
 html[data-edition='dhuan'] #pp-toggles .pp-toggle-group:has(> #scope-toggle),
 html[data-edition='dhuan'] .cyber-sonar-control {
+  display: none !important;
+}
+
+/* The dock reveals `.button-grid` with an !important flex when the tray is
+   open (command-dock-compact.css); the presets need more specificity than
+   the retired-dressing list above to stay gone inside the Map tray. */
+html[data-edition='dhuan'] #command-dock #control-panel #style-buttons,
+html[data-edition='dhuan'] #command-dock #control-panel:not(.collapsed) #style-buttons,
+html[data-edition='dhuan'] #command-dock #control-panel #style-mini-status {
   display: none !important;
 }
 
@@ -645,6 +655,8 @@ html[data-edition='dhuan'] .data-toggle-legend-item {
 }
 
 html[data-edition='dhuan'] .data-toggle-legend-swatch {
+  width: 10px;
+  height: 10px;
   border-radius: 3px;
 }
 
@@ -792,12 +804,15 @@ html[data-edition='dhuan'] #pp-toggles.collapsed > .pp-panel-body {
   display: none;
 }
 
-/* ── Dock: one search pill ─────────────────────────────────────── */
+/* ── Dock: search and Map ──────────────────────────────────────── */
 html[data-edition='dhuan'] #command-dock {
-  --dock-location-open: min(92vw, 400px);
-  grid-template-areas: 'locations';
-  grid-template-columns: minmax(260px, 1fr);
-  width: min(92vw, 400px);
+  --dh-dock-width: min(92vw, 520px);
+  --dock-location-open: var(--dh-dock-width);
+  --dock-presets-open: var(--dh-dock-width);
+  --dock-side-compact: var(--dh-dock-width);
+  grid-template-areas: 'locations presets';
+  grid-template-columns: minmax(220px, 1fr) auto;
+  width: var(--dh-dock-width);
   padding: 4px;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
@@ -832,6 +847,104 @@ html[data-edition='dhuan']
   border: 0;
   border-radius: inherit;
   box-shadow: none;
+}
+
+html[data-edition='dhuan'] #command-dock > #control-panel,
+html[data-edition='dhuan'] #command-dock > #control-panel:not(.collapsed) {
+  flex: 0 0 auto;
+  width: auto;
+  background: transparent;
+  border: 0;
+  border-radius: inherit;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html[data-edition='dhuan'] #command-dock > #control-panel > .panel-inner,
+html[data-edition='dhuan'] #command-dock #control-panel.collapsed .panel-inner {
+  min-height: 44px;
+  padding: 6px 14px;
+  background: transparent;
+  border: 0;
+  border-radius: inherit;
+  box-shadow: none;
+}
+
+html[data-edition='dhuan'] #command-dock .panel-header,
+html[data-edition='dhuan'] #command-dock .location-toolbar,
+html[data-edition='dhuan']
+  #command-dock
+  #control-panel.collapsed
+  .panel-header {
+  min-width: 0;
+}
+
+html[data-edition='dhuan'] #command-dock #control-panel .dock-popover-content {
+  right: -5px;
+}
+
+html[data-edition='dhuan'] #command-dock .map-source-section {
+  padding: 0;
+  border: 0;
+}
+
+html[data-edition='dhuan'] #command-dock .map-source-heading {
+  margin: 0 0 10px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+html[data-edition='dhuan'] #command-dock .pp-stack-status {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--dh-text-3);
+}
+
+/* Six sources read as pills, three to a row. */
+html[data-edition='dhuan'] #command-dock .map-stack-chip-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+html[data-edition='dhuan'] #command-dock .map-stack-chip {
+  min-height: 36px;
+  padding: 6px 10px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: normal;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+}
+
+html[data-edition='dhuan'] #command-dock .map-stack-chip:hover,
+html[data-edition='dhuan'] #command-dock .map-stack-chip:focus-visible {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--glass-border-hover);
+}
+
+html[data-edition='dhuan'] #command-dock .map-stack-chip.active {
+  color: #ffc294;
+  background: var(--accent-dim);
+  border-color: rgba(255, 138, 60, 0.45);
+  box-shadow: none;
+}
+
+html[data-edition='dhuan'] #command-dock .map-stack-chip-req {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.04em;
 }
 
 html[data-edition='dhuan'] #command-dock .dock-pin-btn {
@@ -1328,7 +1441,24 @@ html[data-edition='dhuan'] #global-loading-label {
   }
 
   html[data-edition='dhuan'] #command-dock {
-    width: min(92vw, 360px);
+    --dh-dock-width: min(94vw, 380px);
+  }
+
+  /* The Map tray hangs off the Map button's right edge on desktop; on a
+     phone that runs it off screen. Let the dock be its containing block so
+     it spans the dock, two pills to a row. */
+  html[data-edition='dhuan'] #command-dock > #control-panel {
+    position: static;
+  }
+
+  html[data-edition='dhuan'] #command-dock #control-panel .dock-popover-content {
+    right: 0;
+    left: 0;
+    width: auto;
+  }
+
+  html[data-edition='dhuan'] #command-dock .map-stack-chip-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   /* Clear of the centred dock: the corner actions ride above it. */

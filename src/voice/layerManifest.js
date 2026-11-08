@@ -393,6 +393,26 @@ const layers = [
     noQuery: 'cable records are not loaded for queries',
   },
   {
+    id: 'ocean-currents',
+    aliases: ['ocean currents', 'sea currents', 'currents', 'gulf stream'],
+    context: false,
+    noQuery: 'schematic map overlay; no countable records',
+  },
+  {
+    id: 'seafloor-features',
+    aliases: [
+      'sea floor features',
+      'seafloor features',
+      'undersea features',
+      'undersea feature names',
+      'plate boundaries',
+      'tectonic plates',
+      'trenches',
+    ],
+    context: true,
+    noQuery: 'bundled gazetteer names; no live records',
+  },
+  {
     // Global Context owns this layer; voice reaches it through
     // set_context_mode, never a bare toggle.
     id: 'military-awareness',

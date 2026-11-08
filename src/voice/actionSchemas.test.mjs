@@ -38,7 +38,7 @@ test('the complete Realtime tool payload pins the manifest-generated layer relea
     // requested radius and center authority in descriptions only.
     // Street Level and GNSS extend the manifest; tracked and analyst aircraft describe broadcasts.
     // Air quality (ECCC AQHI) extends the manifest.
-    '775ba323384b4c1b62fb8415bac52aecc3fc668e20bedcfa57e426dcd1da3969',
+    'e248ea20d8672098586c93dfc0f8a3549d0186ba8b33f6e2c3630bd590eafaf2',
   );
 });
 
@@ -114,8 +114,11 @@ test('all legacy action arguments are byte-identical after removing the delibera
     // Point-and-ask adds `referent` arguments and 'pointer' enum values.
     delete tool.parameters.properties.referent;
     for (const value of Object.values(tool.parameters.properties)) {
+      // The GEBCO sea-floor basemap is a later additive stack.
       if (value.enum)
-        value.enum = value.enum.filter((key) => key !== 'pointer');
+        value.enum = value.enum.filter(
+          (key) => key !== 'pointer' && key !== 'gebco',
+        );
     }
   }
   const track = legacy.find((tool) => tool.name === 'track_entity').parameters;

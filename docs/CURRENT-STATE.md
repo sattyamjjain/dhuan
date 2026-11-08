@@ -44,6 +44,51 @@ provider registration rejects compositions that cannot fit rather than truncatin
 identities. A malformed or duplicate entry invalidates the complete custom-switch
 field. Existing whole-link size limits still apply.
 
+## Ocean layers — November 8, 2026
+
+Two bundled layers and a basemap, all keyless and off by default, grouped as
+"Ocean" in `EDITION.panelGroups`:
+
+- `ocean-currents` (share token `5`, `src/layers/oceanCurrents/`): thirty major
+  surface currents as 32 hand-drawn LineStrings
+  (`src/data/local_data/ocean_currents/currents.json`, CC0, schematic), rendered
+  as lifted `Primitive` polylines (12 km, geodesic arcs) with the
+  `GevOceanCurrentFlow` fabric moving dashes along each line; warm `#ff8c42`,
+  cold `#4da3ff`, dash count scaled by length so every current scrolls at the
+  same speed. Names go through the world-overlay host; a Pause chip and
+  `prefers-reduced-motion` stop the flow. Pacific currents that cross 180° are
+  authored with continuous longitudes past 180.
+- `seafloor-features` (token `6`, `src/layers/seafloor/`): the IHO-IOC GEBCO
+  Gazetteer snapshot (`gebco_gazetteer/`, 5,412 named features) plus PB2002
+  plate boundaries (`pb2002_plate_boundaries/`, oceanic classes only). Points are
+  anchors, lines are clamped ground polylines, polygons are outlines for major
+  kinds only; minor features (seamounts, guyots, canyons, banks) hide above
+  2,500 km unless the All names chip is on, and from 3,000 km up only the
+  anchors whose names are on screen stay visible (the label budget is 80
+  there, so every dot at globe scale has a name). Label order is the type
+  rank less five per size tier of the drawn extent (5 and 15 degrees), so the
+  Mid-Atlantic Ridge and the big basins beat 1-degree ridges at globe scale
+  (`seafloorProminence` in `classification.js`); fracture zones rank after
+  the basins because 157 long ones would otherwise fill the budget. Changing
+  the rank table means re-running the fetch script (the bundle stores `r`
+  and a test pins it to the table). Chips: Plate boundaries,
+  Major names / All names,
+  Sea floor map (dispatches `gev:map-stack-request`, handled in
+  `applicationShell._initMapStackControl`). Refresh the bundles with
+  `node scripts/fetch-gebco-gazetteer.mjs` and
+  `node scripts/derive-plate-boundaries.mjs`.
+- Map stack `gebco` (`src/maps/catalog.js`, `createGebcoImagery` in
+  `src/maps/imagery.js`): NOAA NCEI's tile cache of the GEBCO colour shaded
+  relief, with construction and tile-failure fallbacks to Esri. The edition's
+  dock now shows the presets tray as a "Map" tray (`EDITION.ui.mapTray`,
+  read by `_applyRuntimeStaticHeaderText`); the sensor style buttons stay hidden.
+
+Share tokens: upstream published `5` to `9` for other layers after this fork
+branched (s2-ghostmaps, sea-marks, ski-pistes, drone-airspace,
+wildlife-sightings). Dhuan's `5` and `6` are therefore fork-local; a future
+upstream sync must renumber them to the next free pair tokens, which breaks
+Dhuan share links made in between. The token check runs against `origin/main`.
+
 ## Dhuan chrome — October 19, 2026
 
 The edition retires the classification HUD and the scope mask outright:

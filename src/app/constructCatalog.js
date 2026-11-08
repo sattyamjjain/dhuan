@@ -28,6 +28,8 @@ import { createApplicationAirQuality } from './layers/airQuality.js';
 import { createApplicationFirePerimeters } from './layers/perimeters.js';
 import { createApplicationGnssIntegrity } from './layers/gnss.js';
 import { createApplicationCables } from './layers/submarineCables.js';
+import { createApplicationOceanCurrents } from './layers/oceanCurrents.js';
+import { createApplicationSeafloor } from './layers/seafloor.js';
 import { createApplicationStreetLevel } from './layers/streetLevel.js';
 import { createInfrastructureLayers } from '../data/infrastructure.js';
 import { localGeoJsonServices } from './localGeojsonServices.js';
@@ -195,6 +197,8 @@ export function createApplicationCatalog({
       createCyclonesLayer({ feed: sources.cyclones }),
       ...createInfrastructureLayers(localGeoJsonServices),
       createApplicationCables({ source: sources.cables }),
+      createApplicationOceanCurrents(),
+      createApplicationSeafloor(),
       createApplicationFirms({
         surface,
         id: 'local-firms',

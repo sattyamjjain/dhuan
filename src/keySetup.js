@@ -203,7 +203,8 @@ export function stripKeylessBasemapFromHash(hash) {
   if (!hash) return null;
   try {
     const params = new URLSearchParams(hash);
-    if (!['osm', 'esri-imagery'].includes(params.get('map'))) return null;
+    if (!['osm', 'esri-imagery', 'gebco'].includes(params.get('map')))
+      return null;
     params.delete('map');
     return params.toString();
   } catch {

@@ -1,7 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as Cesium from 'cesium';
-import { createIonImagery } from './imagery.js';
+import {
+  createGebcoImagery,
+  createIonImagery,
+  GEBCO_ATTRIBUTION_HTML,
+  GEBCO_TILE_SERVICE_URL,
+} from './imagery.js';
 import { createWorldTerrain, createKeylessTerrain } from './terrain.js';
 import { createDefaultMapSources } from './defaultSources.js';
 
@@ -326,4 +331,32 @@ test('unreachable keyless terrain falls back to flat terrain marked as a fallbac
   const result = await createKeylessTerrain();
   assert.ok(result.provider instanceof Cesium.EllipsoidTerrainProvider);
   assert.equal(result.fallback, true);
+});
+
+test('the GEBCO sea-floor stack is keyless, carries its credit and falls back to Esri', async (t) => {
+  const keyless = createDefaultMapSources();
+  const gebco = keyless.sources.find(
+    ({ descriptor }) => descriptor.id === 'gebco',
+  );
+  assert.equal(gebco.available, true);
+  assert.equal(gebco.imagery, createGebcoImagery);
+  assert.equal(gebco.credit, GEBCO_ATTRIBUTION_HTML);
+  assert.equal(gebco.constructionFallback.id, 'esri-imagery');
+  assert.equal(gebco.tileFailureFallback.id, 'esri-imagery');
+  assert.equal(gebco.terrain.id, 'keyless');
+  const calls = [];
+  t.mock.method(
+    Cesium.ArcGisMapServerImageryProvider,
+    'fromUrl',
+    async (url, options) => {
+      calls.push({ url, options });
+      return { url };
+    },
+  );
+  const provider = await createGebcoImagery();
+  assert.equal(provider.url, GEBCO_TILE_SERVICE_URL);
+  assert.match(GEBCO_TILE_SERVICE_URL, /GEBCO_basemap_NCEI\/MapServer$/);
+  assert.equal(calls[0].options.enablePickFeatures, false);
+  assert.match(calls[0].options.credit, /GEBCO/);
+  assert.match(calls[0].options.credit, /NCEI/);
 });

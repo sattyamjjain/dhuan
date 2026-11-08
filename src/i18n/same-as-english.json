@@ -22,6 +22,7 @@
     "DEST ---°",
     "DEST {bearing}",
     "Dance",
+    "Delhi NCR",
     "ENE",
     "ERROR",
     "ESE",
@@ -97,6 +98,7 @@
     "dB",
     "fire confidence|nominal",
     "ft",
+    "guyot",
     "hPa",
     "installation class|BASE",
     "km",
@@ -108,6 +110,7 @@
     "panel",
     "view band|GLOBAL",
     "voice|ERROR",
+    "{band} ({range})",
     "{rate} msg/s",
     "{speed} kn",
     "{type}  SPD: {speed}  HDG: {heading}",
@@ -116,9 +119,7 @@
     "{value} KM/S",
     "ΔE",
     "ΔN",
-    "▲ {frp} MW",
-    "{band} ({range})",
-    "Delhi NCR"
+    "▲ {frp} MW"
   ],
   "ru": [
     "AIS: --",

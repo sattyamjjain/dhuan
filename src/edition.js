@@ -80,6 +80,10 @@ export const EDITION = Object.freeze({
       ]),
     }),
     Object.freeze({
+      label: msg('Ocean'),
+      ids: Object.freeze(['ocean-currents', 'seafloor-features']),
+    }),
+    Object.freeze({
       label: msg('Also live'),
       ids: Object.freeze(['earthquakes', 'flights', 'recent-imagery']),
     }),
@@ -97,6 +101,8 @@ export const EDITION = Object.freeze({
     earthquakes: 'landslide',
     flights: 'flight',
     'recent-imagery': 'satellite_alt',
+    'ocean-currents': 'waves',
+    'seafloor-features': 'terrain',
   }),
 
   /**
@@ -118,6 +124,11 @@ export const EDITION = Object.freeze({
       hud: false,
       cctv: false,
     }),
+    /**
+     * The dock's presets tray carries only the basemap choice here (the
+     * sensor styles are hidden), so it is labelled as the Map tray.
+     */
+    mapTray: Object.freeze({ label: msg('Map') }),
   }),
 
   /**

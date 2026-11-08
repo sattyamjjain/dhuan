@@ -36,3 +36,12 @@
   All of it lives in `src/ui/styles/dhuan.css`
   (tokens scoped to `html[data-edition="dhuan"]`) and `src/dhuan/storyStrip.js`;
   upstream sheets are untouched (Sattyam Jain).
+- Ocean layers. _Ocean currents_ draws the thirty major surface currents as
+  flowing lines, warm in orange and cold in blue, from a hand-drawn CC0
+  schematic; _Sea floor features_ puts the IHO-IOC GEBCO gazetteer (trenches,
+  ridges, abyssal plains, fracture zones, plateaus, seamounts, guyots, canyons)
+  and the PB2002 plate boundaries on the globe, big features named at any zoom
+  and small ones on zoom or click. A keyless _Sea floor (GEBCO)_ basemap (NOAA
+  NCEI tile cache of the GEBCO shaded relief) joins the map stacks, and the
+  edition's dock gains a Map tray so the basemap can be switched at all
+  (Sattyam Jain).

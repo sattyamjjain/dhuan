@@ -61,10 +61,23 @@ test('setup placement moves the same button only in Cyber and disconnects on tea
 });
 
 test('the chip counts what is missing, and retires the count at zero', () => {
-  assert.equal(keySetupChipLabel({ setCount: 0, total: 8 }), '8 data keys to add');
-  assert.equal(keySetupChipLabel({ setCount: 7, total: 8 }), '1 data key to add');
-  assert.equal(keySetupChipLabel({ setCount: 8, total: 8 }), 'All data keys set');
-  assert.equal(keySetupChipLabel(null), 'All data keys set', 'no status is not a broken label');
+  assert.equal(
+    keySetupChipLabel({ setCount: 0, total: 8 }),
+    '8 data keys to add',
+  );
+  assert.equal(
+    keySetupChipLabel({ setCount: 7, total: 8 }),
+    '1 data key to add',
+  );
+  assert.equal(
+    keySetupChipLabel({ setCount: 8, total: 8 }),
+    'All data keys set',
+  );
+  assert.equal(
+    keySetupChipLabel(null),
+    'All data keys set',
+    'no status is not a broken label',
+  );
 });
 
 test('collectKeyUpdates keeps only non-empty trimmed values', () => {
@@ -104,14 +117,27 @@ test('OAuth login polling stops as soon as local ChatGPT auth becomes available'
 
 test('OAuth login polling stops on login or HTTP failure instead of waiting for timeout', async () => {
   for (const result of [
-    { ok: true, payload: { available: false, loginFailed: true, error: 'Sign-in failed.' } },
+    {
+      ok: true,
+      payload: {
+        available: false,
+        loginFailed: true,
+        error: 'Sign-in failed.',
+      },
+    },
     { ok: false, payload: { error: 'Sign-in is local only.' } },
   ]) {
     let checks = 0;
-    await assert.rejects(waitForChatGptOAuth({
-      fetchImpl: async () => { checks += 1; return { ok: result.ok, json: async () => result.payload }; },
-      sleep: () => assert.fail('failed login must stop polling'),
-    }), { message: result.payload.error });
+    await assert.rejects(
+      waitForChatGptOAuth({
+        fetchImpl: async () => {
+          checks += 1;
+          return { ok: result.ok, json: async () => result.payload };
+        },
+        sleep: () => assert.fail('failed login must stop polling'),
+      }),
+      { message: result.payload.error },
+    );
     assert.equal(checks, 1);
   }
 });
@@ -119,12 +145,34 @@ test('OAuth login polling stops on login or HTTP failure instead of waiting for 
 test('OAuth login polling respects timeout and an aborted setup surface', async () => {
   let clock = 0;
   let checks = 0;
-  const poll = { fetchImpl: async () => { checks += 1; return { ok: true, json: async () => ({ available: false, pending: true }) }; } };
-  assert.equal(await waitForChatGptOAuth({ ...poll, timeoutMs: 100, pollMs: 100, now: () => clock, sleep: async (ms) => { clock += ms; } }), false);
+  const poll = {
+    fetchImpl: async () => {
+      checks += 1;
+      return {
+        ok: true,
+        json: async () => ({ available: false, pending: true }),
+      };
+    },
+  };
+  assert.equal(
+    await waitForChatGptOAuth({
+      ...poll,
+      timeoutMs: 100,
+      pollMs: 100,
+      now: () => clock,
+      sleep: async (ms) => {
+        clock += ms;
+      },
+    }),
+    false,
+  );
   assert.equal(checks, 2);
   const controller = new AbortController();
   controller.abort();
-  assert.equal(await waitForChatGptOAuth({ ...poll, signal: controller.signal }), false);
+  assert.equal(
+    await waitForChatGptOAuth({ ...poll, signal: controller.signal }),
+    false,
+  );
   assert.equal(checks, 2, 'aborted polling does not fetch');
 });
 
@@ -132,22 +180,41 @@ test('OAuth polling ignores a ready response received after the surface was abor
   const controller = new AbortController();
   const available = await waitForChatGptOAuth({
     signal: controller.signal,
-    fetchImpl: async () => ({ ok: true, json: async () => { controller.abort(); return { available: true }; } }),
+    fetchImpl: async () => ({
+      ok: true,
+      json: async () => {
+        controller.abort();
+        return { available: true };
+      },
+    }),
     sleep: () => assert.fail('aborted polling must not continue'),
   });
   assert.equal(available, false);
 });
 
 test('the first Google key strips ONLY the keyless OSM basemap from the share hash', () => {
-  const stripped = stripKeylessBasemapFromHash('lat=30.2&lon=-97.7&map=osm&style=normal');
+  const stripped = stripKeylessBasemapFromHash(
+    'lat=30.2&lon=-97.7&map=osm&style=normal',
+  );
   assert.ok(stripped !== null);
   const params = new URLSearchParams(stripped);
   assert.equal(params.get('map'), null, 'osm basemap removed');
   assert.equal(params.get('lat'), '30.2', 'camera survives');
   assert.equal(params.get('style'), 'normal', 'style survives');
+  // GEBCO is keyless too, so the first Google key lifts it the same way.
+  assert.equal(
+    new URLSearchParams(stripKeylessBasemapFromHash('map=gebco&lat=1')).get(
+      'map',
+    ),
+    null,
+  );
   // A stack under any other name was chosen or shared on purpose.
   assert.equal(stripKeylessBasemapFromHash('map=bing-aerial&lat=1'), null);
-  assert.equal(stripKeylessBasemapFromHash('lat=1&lon=2'), null, 'no stack, nothing to do');
+  assert.equal(
+    stripKeylessBasemapFromHash('lat=1&lon=2'),
+    null,
+    'no stack, nothing to do',
+  );
   assert.equal(stripKeylessBasemapFromHash(''), null);
   assert.equal(stripKeylessBasemapFromHash(undefined), null);
 });
@@ -161,11 +228,15 @@ test('aborting pending setup removes its surface and ignores a late response', a
   let requestSignal;
   const controller = new AbortController();
   const pending = initKeySetup({
-    documentRef: { getElementById: (id) => id === 'key-setup-chip' ? chip : root },
+    documentRef: {
+      getElementById: (id) => (id === 'key-setup-chip' ? chip : root),
+    },
     signal: controller.signal,
     fetchImpl: (_url, { signal }) => {
       requestSignal = signal;
-      return new Promise((resolve) => { resolveResponse = resolve; });
+      return new Promise((resolve) => {
+        resolveResponse = resolve;
+      });
     },
   });
   controller.abort();

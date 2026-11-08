@@ -355,6 +355,22 @@ export const DATA_CREDITS = [
       'Mapterhorn (CC BY 4.0) / EGM2008 (NGA)',
   },
   {
+    key: 'gebco-gazetteer',
+    html:
+      'Undersea feature names: IHO-IOC GEBCO Gazetteer of Undersea Feature Names, ' +
+      '<a href="https://www.gebco.net" target="_blank" rel="noopener">www.gebco.net</a>',
+  },
+  {
+    key: 'pb2002-plates',
+    html:
+      'Plate boundaries: Peter Bird (2003) PB2002 via ' +
+      '<a href="https://github.com/fraxen/tectonicplates" target="_blank" rel="noopener">Hugo Ahlenius, Nordpil</a> (ODC-By 1.0)',
+  },
+  {
+    key: 'ocean-currents-schematic',
+    html: 'Ocean currents: hand-drawn schematic after standard textbook maps, made for this project (CC0, positions approximate)',
+  },
+  {
     key: 'weather-noaa',
     html: 'Observed weather: <a href="https://nowcoast.noaa.gov/" target="_blank" rel="noopener">NOAA nowCOAST</a> · NWS/OAR MRMS radar; NESDIS GOES and global satellite partners. <a href="https://oceanservice.noaa.gov/disclaimer.html" target="_blank" rel="noopener">Source disclaimer</a>.',
   },

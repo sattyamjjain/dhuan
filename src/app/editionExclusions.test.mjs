@@ -64,8 +64,8 @@ test('excluded layers stay registered but are hidden, flagged and refused', asyn
     signal: lifetime.signal,
     surface: fixtureSurface(lifetime.signal),
   });
-  // Still 32 instances: the token ledger and control surface need them.
-  assert.equal(catalog.layers.length, 32);
+  // Still 34 instances: the token ledger and control surface need them.
+  assert.equal(catalog.layers.length, 34);
   assert.ok(catalogControlServices(catalog).cctvLayer, 'the control surface still binds');
 
   const lifecycle = new LayerLifecycle({});

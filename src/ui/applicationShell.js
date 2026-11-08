@@ -826,10 +826,25 @@ export class StyleManager extends ShellFacade {
    * @returns {void}
    */
   _applyRuntimeStaticHeaderText() {
+    // An edition that hides the sensor styles relabels the tray for what is
+    // left in it (the basemap choice); the toggle's accessible name follows.
+    const mapTray = this.services.editionUi?.mapTray;
     this._setHeaderText(
       document.querySelector('#control-panel .panel-title'),
-      t('VISUAL PRESETS'),
+      mapTray?.label ? t(mapTray.label) : t('VISUAL PRESETS'),
     );
+    if (mapTray?.label) {
+      // The panel chrome derives the toggle's own name from the title above;
+      // the pin and the dock keep static template labels that say "presets".
+      const pin = document.querySelector(
+        '#control-panel .dock-pin-btn[data-pin-target="control-panel"]',
+      );
+      pin?.setAttribute('aria-label', t('Pin the map tray'));
+      pin?.setAttribute('title', t('Keep the map tray open'));
+      document
+        .getElementById('command-dock')
+        ?.setAttribute('aria-label', t('Navigation and map controls'));
+    }
     this._setHeaderText(
       document.querySelector('#location-bar .location-toolbar-label'),
       t('Search a place'),
@@ -879,6 +894,18 @@ export class StyleManager extends ShellFacade {
       onStateChanged: () => this._syncShareState(),
       onError: (message) => this._showToast(message),
     });
+    // A layer row may ask for a basemap (the sea-floor layer offers GEBCO);
+    // it goes through the same selection path as a chip click.
+    if (!this._mapStackRequestListener) {
+      this._mapStackRequestListener = (event) => {
+        const id = event?.detail?.id;
+        if (typeof id === 'string' && id) void this._setMapStack(id);
+      };
+      window.addEventListener(
+        'gev:map-stack-request',
+        this._mapStackRequestListener,
+      );
+    }
   }
 
   /**
@@ -1744,6 +1771,13 @@ export class StyleManager extends ShellFacade {
 
     this._displayBindings.destroy();
     this._mapSourceControls?.destroy();
+    if (this._mapStackRequestListener) {
+      window.removeEventListener(
+        'gev:map-stack-request',
+        this._mapStackRequestListener,
+      );
+      this._mapStackRequestListener = null;
+    }
     this._cameraOrientationControls?.destroy();
     this._clearLayersControl?.destroy();
     this._cctvControls?.destroy();

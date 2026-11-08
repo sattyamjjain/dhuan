@@ -31,6 +31,13 @@ export const MAP_STACKS = [
     requiresIon: false,
   },
   {
+    id: 'gebco',
+    label: 'Sea floor (GEBCO)', // i18n-ignore: imagery product name
+    shortLabel: 'Sea floor', // i18n-ignore: imagery product name
+    kind: 'gebco',
+    requiresIon: false,
+  },
+  {
     id: 'osm',
     label: 'OSM', // i18n-ignore: imagery product name
     shortLabel: 'OSM',

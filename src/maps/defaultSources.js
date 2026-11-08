@@ -5,8 +5,10 @@ import { t } from '../i18n/index.js';
 import {
   createOsmImagery,
   createEsriImagery,
+  createGebcoImagery,
   createIonImagery,
   ESRI_ATTRIBUTION_HTML,
+  GEBCO_ATTRIBUTION_HTML,
 } from './imagery.js';
 import { createWorldTerrain, createKeylessTerrain } from './terrain.js';
 
@@ -47,16 +49,34 @@ export function createDefaultMapSources({
           unavailableReason: photorealUnavailableReason(hasIon || hasGoogle),
           tileset: googleTileset,
         };
+      // Every kind names its own factory; an unlisted kind must not quietly
+      // render Esri under another stack's label.
       const imagery =
         descriptor.kind === 'ion'
           ? () => createIonImagery(descriptor.style, ionToken)
-          : descriptor.id === 'osm'
-            ? createOsmImagery
-            : createEsriImagery;
+          : descriptor.kind === 'gebco'
+            ? createGebcoImagery
+            : descriptor.id === 'osm'
+              ? createOsmImagery
+              : createEsriImagery;
       return {
         ...common,
         imagery,
         terrain,
+        ...(descriptor.id === 'gebco'
+          ? {
+              credit: GEBCO_ATTRIBUTION_HTML,
+              constructionFallback: {
+                id: 'esri-imagery',
+                message: 'GEBCO sea floor is unavailable; using Esri Satellite',
+              },
+              tileFailureFallback: {
+                id: 'esri-imagery',
+                threshold: 2,
+                message: 'GEBCO tile requests failed; using Esri Satellite',
+              },
+            }
+          : {}),
         ...(descriptor.id === 'esri-imagery'
           ? {
               credit: ESRI_ATTRIBUTION_HTML,

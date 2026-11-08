@@ -50,6 +50,16 @@ share link or a scene cannot bring them back.
   six-band legend with ranges.
 - **Welcome**: "Smog season live" turns on the three story layers and keeps the camera over
   Punjab; "Explore the map" starts clean.
+- **Ocean** (in Layers): two layers that go beyond the smog story. _Ocean currents_
+  draws the thirty major surface currents as flowing lines, warm in orange and cold in
+  blue, from a hand-drawn textbook schematic. _Sea floor features_ puts the IHO-IOC GEBCO
+  gazetteer on the globe: trenches, mid-ocean ridges, abyssal plains, fracture zones,
+  plateaus, seamounts, guyots and canyons, with plate boundaries drawn as spreading
+  ridges, subduction zones and transform faults. Big features carry names at any zoom;
+  small ones name themselves when you zoom in or click them.
+- **Map** (bottom, beside the search): the basemap switch. _Sea floor (GEBCO)_ is the keyless
+  shaded relief that shows the continental shelf, slope and rise, the abyssal plains and
+  the trenches; Google 3D, Bing, Esri and OpenStreetMap are the others.
 - **Search a place** (bottom): one search field, with quick pills for Delhi, Chandigarh,
   Ludhiana, Amritsar and Lucknow and their landmarks.
 - **Keys**: the bottom-right chip counts the data keys still to add and opens the setup

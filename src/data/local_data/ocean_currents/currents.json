@@ -1,0 +1,806 @@
+{
+  "type": "FeatureCollection",
+  "meta": {
+    "title": "Major ocean surface currents (schematic)",
+    "license": "CC0-1.0",
+    "schematic": true,
+    "authored": "2026-11-08",
+    "note": "Positions are approximate, drawn by hand after standard textbook maps. Vertex order is the direction of flow. Longitudes may exceed 180 so a Pacific current never jumps across the antimeridian."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "gulf-stream",
+      "properties": {
+        "id": "gulf-stream",
+        "name": "Gulf Stream",
+        "temp": "warm",
+        "basin": "atlantic",
+        "speedClass": "fast",
+        "rank": 1
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-80.8, 24.5],
+          [-80.0, 27.0],
+          [-79.6, 29.5],
+          [-78.5, 32.0],
+          [-75.5, 35.0],
+          [-71.0, 37.5],
+          [-65.0, 39.5],
+          [-57.0, 41.5],
+          [-50.0, 43.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "north-atlantic-drift",
+      "properties": {
+        "id": "north-atlantic-drift",
+        "name": "North Atlantic Drift",
+        "temp": "warm",
+        "basin": "atlantic",
+        "speedClass": "moderate",
+        "rank": 1
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-50.0, 43.0],
+          [-42.0, 46.0],
+          [-34.0, 49.0],
+          [-26.0, 52.0],
+          [-18.0, 55.0],
+          [-11.0, 58.5],
+          [-4.0, 61.0],
+          [2.0, 62.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "norwegian-current",
+      "properties": {
+        "id": "norwegian-current",
+        "name": "Norwegian Current",
+        "temp": "warm",
+        "basin": "atlantic",
+        "speedClass": "moderate",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [2.0, 62.0],
+          [4.0, 64.5],
+          [8.0, 67.0],
+          [12.0, 69.5],
+          [18.0, 71.5],
+          [25.0, 73.0],
+          [33.0, 74.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "canary-current",
+      "properties": {
+        "id": "canary-current",
+        "name": "Canary Current",
+        "temp": "cold",
+        "basin": "atlantic",
+        "speedClass": "slow",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-10.5, 42.0],
+          [-11.5, 38.5],
+          [-13.0, 35.0],
+          [-15.0, 31.0],
+          [-16.5, 27.5],
+          [-18.0, 23.5],
+          [-19.5, 19.5],
+          [-20.0, 16.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "north-equatorial-current-atlantic",
+      "properties": {
+        "id": "north-equatorial-current-atlantic",
+        "name": "North Equatorial Current (Atlantic)",
+        "temp": "warm",
+        "basin": "atlantic",
+        "speedClass": "moderate",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-22.0, 14.0],
+          [-30.0, 13.5],
+          [-38.0, 13.0],
+          [-46.0, 12.5],
+          [-53.0, 13.0],
+          [-58.0, 13.5]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "caribbean-current",
+      "properties": {
+        "id": "caribbean-current",
+        "name": "Caribbean Current",
+        "temp": "warm",
+        "basin": "atlantic",
+        "speedClass": "moderate",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-62.0, 13.5],
+          [-67.0, 14.0],
+          [-72.0, 14.5],
+          [-77.0, 15.5],
+          [-81.0, 17.5],
+          [-85.0, 20.0],
+          [-86.5, 22.5],
+          [-85.0, 24.5]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "equatorial-counter-current-atlantic",
+      "properties": {
+        "id": "equatorial-counter-current-atlantic",
+        "name": "Equatorial Counter Current (Atlantic)",
+        "temp": "warm",
+        "basin": "atlantic",
+        "speedClass": "slow",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-45.0, 4.5],
+          [-38.0, 5.0],
+          [-30.0, 5.5],
+          [-22.0, 5.0],
+          [-14.0, 4.5],
+          [-6.0, 4.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "guinea-current",
+      "properties": {
+        "id": "guinea-current",
+        "name": "Guinea Current",
+        "temp": "warm",
+        "basin": "atlantic",
+        "speedClass": "slow",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-16.0, 5.5],
+          [-12.0, 4.5],
+          [-8.0, 4.0],
+          [-4.0, 3.5],
+          [0.0, 3.5],
+          [4.0, 3.5],
+          [8.0, 4.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "south-equatorial-current-atlantic",
+      "properties": {
+        "id": "south-equatorial-current-atlantic",
+        "name": "South Equatorial Current (Atlantic)",
+        "temp": "warm",
+        "basin": "atlantic",
+        "speedClass": "moderate",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [6.0, -7.0],
+          [-2.0, -6.5],
+          [-10.0, -6.0],
+          [-18.0, -5.5],
+          [-26.0, -5.0],
+          [-33.0, -4.0],
+          [-36.0, -3.5]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "brazil-current",
+      "properties": {
+        "id": "brazil-current",
+        "name": "Brazil Current",
+        "temp": "warm",
+        "basin": "atlantic",
+        "speedClass": "moderate",
+        "rank": 1
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-36.5, -9.0],
+          [-38.0, -13.0],
+          [-39.5, -17.5],
+          [-41.0, -22.0],
+          [-44.5, -25.5],
+          [-47.5, -29.0],
+          [-50.5, -33.0],
+          [-53.0, -37.0],
+          [-55.0, -40.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "falkland-current",
+      "properties": {
+        "id": "falkland-current",
+        "name": "Falkland (Malvinas) Current",
+        "temp": "cold",
+        "basin": "atlantic",
+        "speedClass": "moderate",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-66.0, -56.0],
+          [-64.5, -52.5],
+          [-62.0, -49.0],
+          [-60.0, -46.0],
+          [-58.0, -43.0],
+          [-56.0, -40.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "benguela-current",
+      "properties": {
+        "id": "benguela-current",
+        "name": "Benguela Current",
+        "temp": "cold",
+        "basin": "atlantic",
+        "speedClass": "slow",
+        "rank": 1
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [18.5, -36.0],
+          [16.5, -32.5],
+          [14.5, -29.0],
+          [13.0, -25.5],
+          [12.5, -22.0],
+          [11.5, -18.0],
+          [10.5, -14.0],
+          [9.5, -11.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "labrador-current",
+      "properties": {
+        "id": "labrador-current",
+        "name": "Labrador Current",
+        "temp": "cold",
+        "basin": "atlantic",
+        "speedClass": "moderate",
+        "rank": 1
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-60.0, 65.0],
+          [-58.5, 61.5],
+          [-56.0, 58.0],
+          [-53.5, 54.5],
+          [-52.0, 51.0],
+          [-52.5, 48.0],
+          [-55.0, 45.5],
+          [-60.0, 43.5]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "east-greenland-current",
+      "properties": {
+        "id": "east-greenland-current",
+        "name": "East Greenland Current",
+        "temp": "cold",
+        "basin": "atlantic",
+        "speedClass": "moderate",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-6.0, 80.0],
+          [-10.0, 77.5],
+          [-16.0, 74.5],
+          [-20.0, 71.5],
+          [-24.0, 68.5],
+          [-31.0, 66.0],
+          [-38.0, 63.0],
+          [-42.5, 60.5]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "kuroshio",
+      "properties": {
+        "id": "kuroshio",
+        "name": "Kuroshio",
+        "temp": "warm",
+        "basin": "pacific",
+        "speedClass": "fast",
+        "rank": 1
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [122.0, 19.5],
+          [122.5, 23.0],
+          [124.5, 26.0],
+          [128.0, 29.5],
+          [131.5, 31.5],
+          [136.0, 33.0],
+          [140.5, 35.0],
+          [144.0, 36.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "north-pacific-current",
+      "properties": {
+        "id": "north-pacific-current",
+        "name": "North Pacific Current",
+        "temp": "warm",
+        "basin": "pacific",
+        "speedClass": "slow",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [150.0, 38.0],
+          [160.0, 40.0],
+          [170.0, 41.5],
+          [180.0, 42.5],
+          [190.0, 43.5],
+          [200.0, 44.5],
+          [212.0, 45.5],
+          [224.0, 46.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alaska-current",
+      "properties": {
+        "id": "alaska-current",
+        "name": "Alaska Current",
+        "temp": "warm",
+        "basin": "pacific",
+        "speedClass": "moderate",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-134.0, 50.0],
+          [-138.0, 53.5],
+          [-143.0, 56.5],
+          [-148.0, 58.5],
+          [-153.0, 57.5],
+          [-158.0, 56.0],
+          [-163.0, 54.5],
+          [-168.0, 53.5]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "california-current",
+      "properties": {
+        "id": "california-current",
+        "name": "California Current",
+        "temp": "cold",
+        "basin": "pacific",
+        "speedClass": "slow",
+        "rank": 1
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-128.0, 48.0],
+          [-126.5, 44.5],
+          [-125.0, 41.0],
+          [-123.5, 37.5],
+          [-121.5, 34.0],
+          [-119.0, 31.0],
+          [-116.5, 27.5],
+          [-113.5, 24.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "north-equatorial-current-pacific",
+      "properties": {
+        "id": "north-equatorial-current-pacific",
+        "name": "North Equatorial Current (Pacific)",
+        "temp": "warm",
+        "basin": "pacific",
+        "speedClass": "moderate",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [255.0, 11.5],
+          [240.0, 12.0],
+          [225.0, 12.5],
+          [210.0, 12.5],
+          [195.0, 13.0],
+          [180.0, 13.0],
+          [165.0, 13.0],
+          [150.0, 13.0],
+          [135.0, 13.5]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "equatorial-counter-current-pacific",
+      "properties": {
+        "id": "equatorial-counter-current-pacific",
+        "name": "Equatorial Counter Current (Pacific)",
+        "temp": "warm",
+        "basin": "pacific",
+        "speedClass": "moderate",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [140.0, 5.5],
+          [155.0, 6.0],
+          [170.0, 6.0],
+          [185.0, 6.5],
+          [200.0, 6.5],
+          [215.0, 6.5],
+          [230.0, 7.0],
+          [245.0, 7.5],
+          [262.0, 8.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "south-equatorial-current-pacific",
+      "properties": {
+        "id": "south-equatorial-current-pacific",
+        "name": "South Equatorial Current (Pacific)",
+        "temp": "warm",
+        "basin": "pacific",
+        "speedClass": "moderate",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [275.0, -4.0],
+          [260.0, -4.5],
+          [245.0, -5.0],
+          [230.0, -5.5],
+          [215.0, -6.0],
+          [200.0, -6.5],
+          [185.0, -7.0],
+          [170.0, -8.0],
+          [160.0, -10.0],
+          [155.0, -12.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oyashio",
+      "properties": {
+        "id": "oyashio",
+        "name": "Oyashio",
+        "temp": "cold",
+        "basin": "pacific",
+        "speedClass": "moderate",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [165.0, 56.0],
+          [162.0, 53.5],
+          [158.0, 50.5],
+          [154.0, 48.0],
+          [150.0, 45.5],
+          [146.5, 43.0],
+          [144.0, 41.0],
+          [142.5, 39.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "peru-current",
+      "properties": {
+        "id": "peru-current",
+        "name": "Peru (Humboldt) Current",
+        "temp": "cold",
+        "basin": "pacific",
+        "speedClass": "slow",
+        "rank": 1
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-75.5, -43.0],
+          [-74.5, -38.0],
+          [-73.5, -33.0],
+          [-74.5, -28.0],
+          [-76.0, -23.0],
+          [-78.0, -18.0],
+          [-80.0, -13.0],
+          [-82.0, -8.0],
+          [-84.0, -3.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "east-australian-current",
+      "properties": {
+        "id": "east-australian-current",
+        "name": "East Australian Current",
+        "temp": "warm",
+        "basin": "pacific",
+        "speedClass": "moderate",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [149.5, -17.0],
+          [151.5, -21.0],
+          [153.0, -25.0],
+          [154.0, -29.0],
+          [153.5, -33.0],
+          [152.0, -36.0],
+          [150.0, -38.5]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "agulhas-current",
+      "properties": {
+        "id": "agulhas-current",
+        "name": "Agulhas Current",
+        "temp": "warm",
+        "basin": "indian",
+        "speedClass": "fast",
+        "rank": 1
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [41.5, -21.0],
+          [38.0, -25.0],
+          [34.5, -29.0],
+          [31.0, -32.5],
+          [27.5, -35.0],
+          [24.0, -37.0],
+          [20.5, -38.5]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mozambique-current",
+      "properties": {
+        "id": "mozambique-current",
+        "name": "Mozambique Current",
+        "temp": "warm",
+        "basin": "indian",
+        "speedClass": "moderate",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [43.5, -10.5],
+          [42.0, -14.0],
+          [40.5, -17.5],
+          [38.5, -21.0],
+          [36.5, -24.5]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "somali-current",
+      "properties": {
+        "id": "somali-current",
+        "name": "Somali Current",
+        "temp": "warm",
+        "basin": "indian",
+        "speedClass": "fast",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [45.5, -4.0],
+          [47.0, -1.0],
+          [49.0, 2.5],
+          [51.0, 6.0],
+          [53.0, 9.5],
+          [56.0, 12.5]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "south-equatorial-current-indian",
+      "properties": {
+        "id": "south-equatorial-current-indian",
+        "name": "South Equatorial Current (Indian)",
+        "temp": "warm",
+        "basin": "indian",
+        "speedClass": "moderate",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [106.0, -12.0],
+          [96.0, -12.0],
+          [86.0, -12.0],
+          [76.0, -12.5],
+          [66.0, -12.5],
+          [57.0, -13.0],
+          [50.5, -13.5]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "west-australian-current",
+      "properties": {
+        "id": "west-australian-current",
+        "name": "West Australian Current",
+        "temp": "cold",
+        "basin": "indian",
+        "speedClass": "slow",
+        "rank": 2
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [113.5, -36.0],
+          [111.5, -32.0],
+          [109.5, -28.0],
+          [108.5, -24.0],
+          [108.5, -20.0],
+          [109.5, -17.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "antarctic-circumpolar-current-atlantic",
+      "properties": {
+        "id": "antarctic-circumpolar-current-atlantic",
+        "name": "Antarctic Circumpolar Current",
+        "temp": "cold",
+        "basin": "southern",
+        "speedClass": "moderate",
+        "rank": 1
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-65.0, -58.0],
+          [-55.0, -57.0],
+          [-45.0, -56.0],
+          [-35.0, -55.0],
+          [-25.0, -54.0],
+          [-15.0, -53.5],
+          [-5.0, -53.5],
+          [5.0, -53.5],
+          [15.0, -54.0],
+          [20.0, -54.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "antarctic-circumpolar-current-indian",
+      "properties": {
+        "id": "antarctic-circumpolar-current-indian",
+        "name": "Antarctic Circumpolar Current",
+        "temp": "cold",
+        "basin": "southern",
+        "speedClass": "moderate",
+        "rank": 1
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [20.0, -54.0],
+          [35.0, -54.5],
+          [50.0, -55.0],
+          [65.0, -55.5],
+          [80.0, -56.0],
+          [95.0, -56.5],
+          [110.0, -57.0],
+          [125.0, -57.5],
+          [140.0, -58.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "antarctic-circumpolar-current-pacific",
+      "properties": {
+        "id": "antarctic-circumpolar-current-pacific",
+        "name": "Antarctic Circumpolar Current",
+        "temp": "cold",
+        "basin": "southern",
+        "speedClass": "moderate",
+        "rank": 1
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [140.0, -58.0],
+          [155.0, -59.0],
+          [170.0, -60.0],
+          [185.0, -60.5],
+          [200.0, -61.0],
+          [215.0, -61.0],
+          [230.0, -61.0],
+          [245.0, -60.5],
+          [260.0, -60.0],
+          [275.0, -59.5],
+          [290.0, -59.0]
+        ]
+      }
+    }
+  ]
+}

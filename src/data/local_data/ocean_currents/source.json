@@ -1,0 +1,18 @@
+{
+  "id": "ocean-currents",
+  "name": "Ocean currents schematic",
+  "category": "schematic",
+  "description": "Hand-drawn GeoJSON of the thirty major ocean surface currents after standard textbook maps. Positions are approximate; vertex order is the direction of flow.",
+  "authored_at": "2026-11-08",
+  "license": "CC0-1.0",
+  "license_note": "Dedicated to the public domain by the author (CC0 1.0). Schematic positions only, not measured flow and not for navigation. Nothing was traced from a copyrighted layer.",
+  "files": [
+    {
+      "path": "currents.json",
+      "format": "GeoJSON",
+      "geojson_type": "FeatureCollection",
+      "feature_count": 32,
+      "sha256": "0ca08a27fb0aa0538322c50a764d289fb4febc6e9c10eb4e7ddd039891297327"
+    }
+  ]
+}
